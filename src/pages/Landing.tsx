@@ -177,8 +177,8 @@ function Landing() {
             </Text>
 
             <Stack mt={9} direction={{ base: 'column', sm: 'row' }} spacing={3}>
-              <ShinyButton to={ROUTES.SIGN_IN} h="52px" px={8}>
-                Sign in
+              <ShinyButton to={ROUTES.DASHBOARD} h="52px" px={8}>
+                Get Started
               </ShinyButton>
               <AppButton
                 as={RouterLink}

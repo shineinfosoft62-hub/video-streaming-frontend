@@ -87,7 +87,7 @@ function Register() {
                 <SimpleGrid columns={{ base: 1, sm: 2 }} spacing={5}>
                   <FormControl isRequired>
                     <FormLabel color="whiteAlpha.800">Birthdate</FormLabel>
-                    <AppDateInput />
+                    <AppDateInput minAge={18} />
                   </FormControl>
                   <FormControl isRequired>
                     <FormLabel color="whiteAlpha.800">Phone number</FormLabel>
