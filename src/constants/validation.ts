@@ -1,0 +1,9 @@
+export const maxVideoSize = 500 * 1024 * 1024 // 500MB
+export const allowedVideoTypes = ['video/mp4', 'video/webm', 'video/ogg']
+export const maxTitleLength = 3
+export const maxDescriptionLength = 10
+export const MAX_TITLE_LENGTH_VALIDATION_MESSAGE = `Title must be at most ${maxTitleLength} characters long.`
+export const MAX_DESCRIPTION_LENGTH_VALIDATION_MESSAGE = `Description must be at most ${maxDescriptionLength} characters long.`
+export const MAX_VIDEO_SIZE_VALIDATION_MESSAGE = `Video file must be less than ${maxVideoSize / (1024 * 1024)} MB.`
+export const ALLOWED_VIDEO_TYPES_VALIDATION_MESSAGE = `Video file must be one of the following types: ${allowedVideoTypes.join(', ')}.`
+export const REQUIRED_FIELD_VALIDATION_MESSAGE = 'This field is required.'
