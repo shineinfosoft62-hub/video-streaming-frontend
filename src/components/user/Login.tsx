@@ -1,6 +1,7 @@
 import {
   Box,
   Container,
+  FormErrorMessage,
   FormControl,
   FormLabel,
   Grid,
@@ -9,15 +10,90 @@ import {
   Stack,
   Text,
 } from '@chakra-ui/react'
+import { useState, type FormEvent } from 'react'
 import { Link as RouterLink, useNavigate } from 'react-router-dom'
 import AppBadge from '../common/AppBadge'
 import AppButton from '../common/AppButton'
 import AppInput from '../common/AppInput'
 import AppPasswordInput from '../common/AppPasswordInput'
+import useAppToast from '../common/useAppToast'
 import { ROUTES } from '../../constants/routes'
+import {
+  emailMessage,
+  emailRegex,
+  passwordMessage,
+  passwordRegex,
+} from '../../utils/authValidation'
+import { getApiErrorMessage, signInUser } from '../../service/auth'
+
+type LoginValues = {
+  email: string
+  password: string
+}
+
+type LoginErrors = Partial<Record<keyof LoginValues, string>>
+
+const validateLogin = (values: LoginValues) => {
+  const errors: LoginErrors = {}
+
+  if (!values.email.trim()) {
+    errors.email = 'Email is required.'
+  } else if (!emailRegex.test(values.email.trim())) {
+    errors.email = emailMessage
+  }
+
+  if (!values.password) {
+    errors.password = 'Password is required.'
+  } else if (!passwordRegex.test(values.password)) {
+    errors.password = passwordMessage
+  }
+
+  return errors
+}
 
 function Login() {
   const navigate = useNavigate()
+  const { showApiToast } = useAppToast()
+  const [values, setValues] = useState<LoginValues>({ email: '', password: '' })
+  const [errors, setErrors] = useState<LoginErrors>({})
+  const [formError, setFormError] = useState('')
+  const [isSubmitting, setIsSubmitting] = useState(false)
+
+  const updateValue = (field: keyof LoginValues, value: string) => {
+    setValues((current) => ({ ...current, [field]: value }))
+    setErrors((current) => ({ ...current, [field]: undefined }))
+    setFormError('')
+  }
+
+  const handleSubmit = async (event: FormEvent<HTMLDivElement>) => {
+    event.preventDefault()
+    const nextErrors = validateLogin(values)
+
+    setErrors(nextErrors)
+
+    if (Object.keys(nextErrors).length > 0) {
+      return
+    }
+
+    setIsSubmitting(true)
+    setFormError('')
+
+    try {
+      const response = await signInUser({
+        email: values.email.trim(),
+        password: values.password,
+      })
+      showApiToast(response.message, 'success')
+      navigate(ROUTES.DASHBOARD)
+    } catch (error) {
+      const message = getApiErrorMessage(error)
+
+      setFormError(message)
+      showApiToast(message, 'error')
+    } finally {
+      setIsSubmitting(false)
+    }
+  }
 
   return (
     <Box minH="100vh" bg="#0b0d12" color="white" px={{ base: 5, md: 8 }} py={{ base: 8, md: 12 }}>
@@ -70,21 +146,35 @@ function Login() {
                 as="form"
                 mt={8}
                 spacing={5}
-                onSubmit={(event) => {
-                  event.preventDefault()
-                  navigate(ROUTES.DASHBOARD)
-                }}
+                noValidate
+                onSubmit={handleSubmit}
               >
-                <FormControl isRequired>
+                <FormControl isRequired isInvalid={Boolean(errors.email)}>
                   <FormLabel color="whiteAlpha.800">Email</FormLabel>
-                  <AppInput type="email" placeholder="you@example.com" />
+                  <AppInput
+                    type="email"
+                    value={values.email}
+                    placeholder="you@example.com"
+                    onChange={(event) => updateValue('email', event.target.value)}
+                  />
+                  <FormErrorMessage color="red.300">{errors.email}</FormErrorMessage>
                 </FormControl>
-                <FormControl isRequired>
+                <FormControl isRequired isInvalid={Boolean(errors.password)}>
                   <FormLabel color="whiteAlpha.800">Password</FormLabel>
-                  <AppPasswordInput placeholder="Enter your password" />
+                  <AppPasswordInput
+                    value={values.password}
+                    placeholder="Enter your password"
+                    onChange={(event) => updateValue('password', event.target.value)}
+                  />
+                  <FormErrorMessage color="red.300">{errors.password}</FormErrorMessage>
                 </FormControl>
+                {formError && (
+                  <Text color="red.300" fontSize="sm" fontWeight="semibold">
+                    {formError}
+                  </Text>
+                )}
                 <Stack direction={{ base: 'column', sm: 'row' }} spacing={3}>
-                  <AppButton type="submit" h="54px" flex="1">
+                  <AppButton type="submit" h="54px" flex="1" isLoading={isSubmitting}>
                     Sign In
                   </AppButton>
                   <AppButton

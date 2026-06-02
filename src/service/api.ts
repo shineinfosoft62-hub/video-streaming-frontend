@@ -1,5 +1,6 @@
 import axios, { type AxiosProgressEvent } from 'axios'
 import { API_BASE_URL, GET_VIDEO_BY_ID, VIDEO_LIST, VIDEO_STREAM, VIDEO_UPLOAD } from '../config/api'
+import { getAccessToken, saveAccessToken } from './authTokens'
 
 export type VideoAsset = {
   id?: string
@@ -30,6 +31,26 @@ type UploadVideoPayload = {
 
 export const apiClient = axios.create({
   baseURL: API_BASE_URL
+})
+
+apiClient.interceptors.request.use((config) => {
+  const accessToken = getAccessToken()
+
+  if (accessToken) {
+    config.headers.Authorization = `Bearer ${accessToken}`
+  }
+
+  return config
+})
+
+apiClient.interceptors.response.use((response) => {
+  const nextAccessToken = response.headers['x-access-token']
+
+  if (typeof nextAccessToken === 'string' && nextAccessToken) {
+    saveAccessToken(nextAccessToken)
+  }
+
+  return response
 })
 
 const getResponseRecord = (value: unknown) => {

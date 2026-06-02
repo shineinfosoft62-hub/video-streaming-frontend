@@ -9,16 +9,24 @@ import {
   Text,
 } from '@chakra-ui/react'
 import { HamburgerIcon, SearchIcon } from '@chakra-ui/icons'
-import { Link as RouterLink } from 'react-router-dom'
+import { Link as RouterLink, useNavigate } from 'react-router-dom'
 import AppButton from '../components/common/AppButton'
 import AppInput from '../components/common/AppInput'
 import { ROUTES } from '../constants/routes'
+import { clearAuthTokens } from '../service/authTokens'
 
 type HeaderProps = {
   onOpenSidebar: () => void
 }
 
 function Header({ onOpenSidebar }: HeaderProps) {
+  const navigate = useNavigate()
+
+  const handleLogout = () => {
+    clearAuthTokens()
+    navigate(ROUTES.SIGN_IN)
+  }
+
   return (
     <Box
       as="header"
@@ -83,6 +91,17 @@ function Header({ onOpenSidebar }: HeaderProps) {
             </Box>
             <Avatar name="Streaming Admin" size="sm" bg="#14b8a6" color="#041311" />
           </HStack>
+          <AppButton
+            type="button"
+            h="42px"
+            rounded="full"
+            bg="whiteAlpha.100"
+            color="white"
+            _hover={{ bg: 'whiteAlpha.200' }}
+            onClick={handleLogout}
+          >
+            Logout
+          </AppButton>
         </HStack>
       </Flex>
     </Box>

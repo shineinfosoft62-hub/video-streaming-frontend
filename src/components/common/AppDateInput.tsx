@@ -1,4 +1,4 @@
-import { CalendarIcon } from '@chakra-ui/icons'
+import { LuCalendar } from "react-icons/lu"
 import {
   Box,
   IconButton,
@@ -10,7 +10,7 @@ import {
   Portal,
   type InputProps,
 } from '@chakra-ui/react'
-import { useMemo, useState } from 'react'
+import { useMemo, useState, type ClipboardEvent, type KeyboardEvent } from 'react'
 import Calendar from 'react-calendar'
 import 'react-calendar/dist/Calendar.css'
 import AppInput from './AppInput'
@@ -49,6 +49,20 @@ const parseDate = (value: string) => {
 
   return date
 }
+
+const allowedDateKeys = new Set([
+  'Backspace',
+  'Delete',
+  'Tab',
+  'Escape',
+  'Enter',
+  'ArrowLeft',
+  'ArrowRight',
+  'ArrowUp',
+  'ArrowDown',
+  'Home',
+  'End',
+])
 
 function AppDateInput({
   value,
@@ -90,6 +104,34 @@ function AppDateInput({
     }
   }
 
+  const handleKeyDown = (event: KeyboardEvent<HTMLInputElement>) => {
+    inputProps.onKeyDown?.(event)
+
+    if (
+      event.defaultPrevented ||
+      event.ctrlKey ||
+      event.metaKey ||
+      allowedDateKeys.has(event.key) ||
+      /^[0-9-]$/.test(event.key)
+    ) {
+      return
+    }
+
+    event.preventDefault()
+  }
+
+  const handlePaste = (event: ClipboardEvent<HTMLInputElement>) => {
+    inputProps.onPaste?.(event)
+
+    if (event.defaultPrevented) {
+      return
+    }
+
+    if (/[^0-9-]/.test(event.clipboardData.getData('text'))) {
+      event.preventDefault()
+    }
+  }
+
   return (
     <Popover
       isOpen={isOpen}
@@ -101,6 +143,7 @@ function AppDateInput({
         <Box>
           <InputGroup>
             <AppInput
+              {...inputProps}
               type="text"
               inputMode="numeric"
               placeholder={placeholder}
@@ -108,12 +151,13 @@ function AppDateInput({
               pr="3.25rem"
               onChange={(event) => updateValue(event.target.value, parseDate(event.target.value))}
               onBlur={handleBlur}
-              {...inputProps}
+              onKeyDown={handleKeyDown}
+              onPaste={handlePaste}
             />
             <InputRightElement h={inputProps.h ?? '52px'} w="3.25rem">
               <IconButton
                 aria-label="Select date"
-                icon={<CalendarIcon />}
+                icon={<LuCalendar />}
                 size="sm"
                 variant="ghost"
                 color="#315f57"
