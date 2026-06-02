@@ -1,5 +1,5 @@
 import axios from 'axios'
-import { AUTH_SIGN_IN, AUTH_SIGN_UP } from '../config/api'
+import { AUTH_LOGOUT, AUTH_SIGN_IN, AUTH_SIGN_UP } from '../config/api'
 import { apiClient } from './api'
 import { saveAuthTokens, type AuthTokens } from './authTokens'
 
@@ -23,6 +23,10 @@ type AuthResponse = {
 }
 
 type SignUpResponse = {
+  message?: string
+}
+
+type LogoutResponse = {
   message?: string
 }
 
@@ -76,6 +80,14 @@ const extractSignUpResponse = (value: unknown): SignUpResponse => {
   }
 }
 
+const extractLogoutResponse = (value: unknown): LogoutResponse => {
+  const record = getRecord(value)
+
+  return {
+    message: getString(record, 'message'),
+  }
+}
+
 export const getApiErrorMessage = (error: unknown) => {
   if (axios.isAxiosError(error)) {
     const record = getRecord(error.response?.data)
@@ -100,4 +112,10 @@ export const signInUser = async (payload: SignInPayload) => {
   saveAuthTokens(authResponse.tokens)
 
   return authResponse
+}
+
+export const logoutUser = async () => {
+  const response = await apiClient.post<unknown>(AUTH_LOGOUT)
+
+  return extractLogoutResponse(response.data)
 }

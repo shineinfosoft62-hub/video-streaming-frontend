@@ -2,7 +2,6 @@ import {
   Box,
   Divider,
   Flex,
-  HStack,
   Stack,
   Text,
   type BoxProps,
@@ -10,6 +9,7 @@ import {
 import { AddIcon, SettingsIcon, ViewIcon } from '@chakra-ui/icons'
 import { Link as RouterLink, useLocation } from 'react-router-dom'
 import AppButton from '../components/common/AppButton'
+import AppLogoutButton from '../components/common/AppLogoutButton'
 import { sidebarMenuItems } from '../constants/sidebarMenu'
 import { ROUTES } from '../constants/routes'
 
@@ -87,17 +87,7 @@ function Sidebar({ onNavigate, ...props }: SidebarProps) {
           })}
         </Stack>
 
-        <Box mt="auto" rounded="2xl" bg="whiteAlpha.100" p={4}>
-          <HStack spacing={3}>
-            <Box boxSize="10px" rounded="full" bg="#14b8a6" />
-            <Box>
-              <Text fontWeight="bold">DASH Ready</Text>
-              <Text mt={1} fontSize="sm" color="whiteAlpha.600">
-                Uploads are prepared for chunk playback.
-              </Text>
-            </Box>
-          </HStack>
-        </Box>
+        <AppLogoutButton mt="auto" variant="sidebar" onLoggedOut={onNavigate} />
       </Flex>
     </Box>
   )

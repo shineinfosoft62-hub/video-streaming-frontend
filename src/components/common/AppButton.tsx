@@ -1,12 +1,12 @@
 import { Button, type ButtonProps } from '@chakra-ui/react'
-import { type ElementType } from 'react'
+import { forwardRef, type ElementType } from 'react'
 
 type AppButtonProps = ButtonProps & {
   as?: ElementType
   to?: string
 }
 
-function AppButton({
+const AppButton = forwardRef<HTMLButtonElement, AppButtonProps>(function AppButton({
   variant,
   rounded,
   borderRadius,
@@ -20,7 +20,7 @@ function AppButton({
   _hover,
   _active,
   ...props
-}: AppButtonProps) {
+}, ref) {
   const usesPrimaryDefaults = !variant || variant === 'solid'
   const hasCustomBg = Boolean(bg ?? background ?? backgroundColor)
   const defaultHover = usesPrimaryDefaults
@@ -40,7 +40,7 @@ function AppButton({
     _active: _active ?? defaultActive,
   } as ButtonProps
 
-  return <Button {...buttonProps} />
-}
+  return <Button ref={ref} {...buttonProps} />
+})
 
 export default AppButton

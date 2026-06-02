@@ -1,5 +1,6 @@
 import { Box, Heading, SimpleGrid, Switch, Text, VStack } from '@chakra-ui/react'
 import AppBadge from '../components/common/AppBadge'
+import AppLogoutButton from '../components/common/AppLogoutButton'
 import { settings } from '../constants/dashboardSettings'
 
 function DashboardSettings() {

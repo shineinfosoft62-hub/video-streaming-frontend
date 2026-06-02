@@ -2,6 +2,7 @@ export const API_BASE_URL = import.meta.env.VITE_API_BASE_URL ?? 'http://localho
 
 export const AUTH_SIGN_UP = '/auth/user/signup'
 export const AUTH_SIGN_IN = '/auth/user/signin'
+export const AUTH_LOGOUT = '/auth/user/logout'
 export const AUTH_REFRESH_TOKEN = '/auth/refresh-token'
 
 export const VIDEO_UPLOAD = '/videos'
