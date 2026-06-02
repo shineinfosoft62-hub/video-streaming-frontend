@@ -1,5 +1,6 @@
-import axios, { type AxiosProgressEvent } from 'axios'
-import { API_BASE_URL, GET_VIDEO_BY_ID, VIDEO_LIST, VIDEO_STREAM, VIDEO_UPLOAD } from '../config/api'
+import axios, { type AxiosError, type AxiosProgressEvent, type InternalAxiosRequestConfig } from 'axios'
+import { API_BASE_URL, AUTH_REFRESH_TOKEN, GET_VIDEO_BY_ID, VIDEO_LIST, VIDEO_STREAM, VIDEO_UPLOAD } from '../config/api'
+import { clearAuthTokens, getAccessToken, getRefreshToken, saveAccessToken } from './authTokens'
 
 export type VideoAsset = {
   id?: string
@@ -32,6 +33,10 @@ export const apiClient = axios.create({
   baseURL: API_BASE_URL
 })
 
+type RetryableRequestConfig = InternalAxiosRequestConfig & {
+  _retry?: boolean
+}
+
 const getResponseRecord = (value: unknown) => {
   if (typeof value === 'object' && value !== null && !Array.isArray(value)) {
     return value as Record<string, unknown>
@@ -44,6 +49,74 @@ const getString = (record: Record<string, unknown> | null, key: string) => {
   const value = record?.[key]
   return typeof value === 'string' ? value : undefined
 }
+
+const isAccessTokenExpiredError = (error: AxiosError) => {
+  const record = getResponseRecord(error.response?.data)
+  const message = `${getString(record, 'message') ?? ''} ${getString(record, 'error') ?? ''}`.toLowerCase()
+
+  return error.response?.status === 401 && message.includes('access') && message.includes('expired')
+}
+
+const extractAccessToken = (value: unknown) => {
+  const record = getResponseRecord(value)
+  const dataRecord = getResponseRecord(record?.data)
+  const tokensRecord = getResponseRecord(record?.tokens)
+
+  return (
+    getString(record, 'accessToken') ??
+    getString(dataRecord, 'accessToken') ??
+    getString(tokensRecord, 'accessToken')
+  )
+}
+
+apiClient.interceptors.request.use((config) => {
+  const accessToken = getAccessToken()
+
+  if (accessToken) {
+    config.headers.Authorization = `Bearer ${accessToken}`
+  }
+
+  return config
+})
+
+apiClient.interceptors.response.use(
+  (response) => {
+    const nextAccessToken = response.headers['x-access-token']
+
+    if (typeof nextAccessToken === 'string' && nextAccessToken) {
+      saveAccessToken(nextAccessToken)
+    }
+
+    return response
+  },
+  async (error: AxiosError) => {
+    const originalRequest = error.config as RetryableRequestConfig | undefined
+    const refreshToken = getRefreshToken()
+
+    if (!originalRequest || originalRequest._retry || !refreshToken || !isAccessTokenExpiredError(error)) {
+      return Promise.reject(error)
+    }
+
+    originalRequest._retry = true
+
+    try {
+      const response = await axios.post<unknown>(`${API_BASE_URL}${AUTH_REFRESH_TOKEN}`, { refreshToken })
+      const accessToken = extractAccessToken(response.data)
+
+      if (!accessToken) {
+        throw new Error('Refresh token response did not include an access token.')
+      }
+
+      saveAccessToken(accessToken)
+      originalRequest.headers.Authorization = `Bearer ${accessToken}`
+
+      return apiClient(originalRequest)
+    } catch (refreshError) {
+      clearAuthTokens()
+      return Promise.reject(refreshError)
+    }
+  },
+)
 
 const getStringOrNumber = (record: Record<string, unknown> | null, key: string) => {
   const value = record?.[key]

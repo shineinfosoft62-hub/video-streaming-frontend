@@ -15,8 +15,8 @@ function AppPasswordInput(props: InputProps) {
           icon={isVisible ? <ViewOffIcon /> : <ViewIcon />}
           size="sm"
           variant="ghost"
-          color="whiteAlpha.700"
-          _hover={{ bg: 'whiteAlpha.100', color: 'white' }}
+          color="blackAlpha.700"
+          _hover={{ bg: 'whiteAlpha.100', color: 'blackAlpha.700' }}
           onClick={() => setIsVisible((current) => !current)}
         />
       </InputRightElement>

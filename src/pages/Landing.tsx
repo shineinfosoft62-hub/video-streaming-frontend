@@ -124,8 +124,8 @@ function Landing() {
               >
                 Sign Up
               </AppButton>
-              <ShinyButton to={ROUTES.DASHBOARD}>
-                Start Watching
+              <ShinyButton to={ROUTES.SIGN_IN}>
+                Sign in
               </ShinyButton>
             </Flex>
           </Flex>

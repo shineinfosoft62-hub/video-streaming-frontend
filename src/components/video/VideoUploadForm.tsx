@@ -20,7 +20,7 @@ import AppLoader from '../common/AppLoader'
 import AppTextarea from '../common/AppTextarea'
 import { AppToast } from '../common/appToast'
 import { uploadVideo, type VideoAsset } from '../../service/api'
-import { ALLOWED_VIDEO_TYPES_VALIDATION_MESSAGE, MAX_DESCRIPTION_LENGTH_VALIDATION_MESSAGE, MAX_TITLE_LENGTH_VALIDATION_MESSAGE, MAX_VIDEO_SIZE_VALIDATION_MESSAGE, REQUIRED_FIELD_VALIDATION_MESSAGE } from '../../constants/validation'
+import { ALLOWED_VIDEO_TYPES_VALIDATION_MESSAGE, DESCRIPTION_REQUIRED_FIELD_VALIDATION_MESSAGE, MAX_DESCRIPTION_LENGTH_VALIDATION_MESSAGE, MAX_TITLE_LENGTH_VALIDATION_MESSAGE, MAX_VIDEO_SIZE_VALIDATION_MESSAGE, TITLE_REQUIRED_FIELD_VALIDATION_MESSAGE, VIDEO_REQUIRED_FIELD_VALIDATION_MESSAGE } from '../../constants/validation'
 
 type FormValues = {
   title: string
@@ -186,19 +186,19 @@ function VideoUploadForm({ onUploaded }: VideoUploadFormProps) {
     const nextErrors: FormErrors = {}
 
     if (!values.title.trim()) {
-      nextErrors.title = REQUIRED_FIELD_VALIDATION_MESSAGE
+      nextErrors.title = TITLE_REQUIRED_FIELD_VALIDATION_MESSAGE
     } else if (values.title.trim().length < 3) {
       nextErrors.title = MAX_TITLE_LENGTH_VALIDATION_MESSAGE
     }
 
     if (!values.description.trim()) {
-      nextErrors.description = REQUIRED_FIELD_VALIDATION_MESSAGE
+      nextErrors.description = DESCRIPTION_REQUIRED_FIELD_VALIDATION_MESSAGE
     } else if (values.description.trim().length < 10) {
       nextErrors.description = MAX_DESCRIPTION_LENGTH_VALIDATION_MESSAGE
     }
 
     if (!values.video) {
-      nextErrors.video = REQUIRED_FIELD_VALIDATION_MESSAGE
+      nextErrors.video = VIDEO_REQUIRED_FIELD_VALIDATION_MESSAGE
     } else if (!allowedVideoTypes.includes(values.video.type)) {
       nextErrors.video = ALLOWED_VIDEO_TYPES_VALIDATION_MESSAGE
     } else if (values.video.size > maxVideoSize) {
