@@ -1,7 +1,7 @@
 import axios from 'axios'
 import { AUTH_LOGOUT, AUTH_SIGN_IN, AUTH_SIGN_UP } from '../config/api'
 import { apiClient } from './api'
-import { saveAuthTokens, type AuthTokens } from './authTokens'
+import { saveAuthTokens, saveAuthUser, type AuthTokens, type AuthUser } from './authTokens'
 
 export type SignUpPayload = {
   firstName: string
@@ -20,6 +20,7 @@ export type SignInPayload = {
 type AuthResponse = {
   message?: string
   tokens: AuthTokens
+  user?: AuthUser
 }
 
 type SignUpResponse = {
@@ -43,6 +44,11 @@ const getString = (record: Record<string, unknown> | null, key: string) => {
   return typeof value === 'string' ? value : undefined
 }
 
+const getStringOrNumber = (record: Record<string, unknown> | null, key: string) => {
+  const value = record?.[key]
+  return typeof value === 'string' || typeof value === 'number' ? String(value) : undefined
+}
+
 const toFormData = (payload: Record<string, string>) => {
   const formData = new FormData()
 
@@ -55,9 +61,19 @@ const toFormData = (payload: Record<string, string>) => {
 
 const extractAuthResponse = (value: unknown): AuthResponse => {
   const record = getRecord(value)
+  const dataRecord = getRecord(record?.data)
   const tokensRecord = getRecord(record?.tokens)
-  const accessToken = getString(tokensRecord, 'accessToken') ?? getString(record, 'accessToken')
-  const refreshToken = getString(tokensRecord, 'refreshToken') ?? getString(record, 'refreshToken')
+  const dataTokensRecord = getRecord(dataRecord?.tokens)
+  const accessToken =
+    getString(tokensRecord, 'accessToken') ??
+    getString(dataTokensRecord, 'accessToken') ??
+    getString(dataRecord, 'accessToken') ??
+    getString(record, 'accessToken')
+  const refreshToken =
+    getString(tokensRecord, 'refreshToken') ??
+    getString(dataTokensRecord, 'refreshToken') ??
+    getString(dataRecord, 'refreshToken') ??
+    getString(record, 'refreshToken')
 
   if (!accessToken || !refreshToken) {
     throw new Error('Authentication response did not include tokens.')
@@ -69,7 +85,32 @@ const extractAuthResponse = (value: unknown): AuthResponse => {
       accessToken,
       refreshToken,
     },
+    user: extractAuthUser(value),
   }
+}
+
+const extractAuthUser = (value: unknown): AuthUser | undefined => {
+  const record = getRecord(value)
+  const dataRecord = getRecord(record?.data)
+  const userRecord =
+    getRecord(record?.user) ??
+    getRecord(record?.profile) ??
+    getRecord(dataRecord?.user) ??
+    getRecord(dataRecord?.profile) ??
+    dataRecord ??
+    record
+
+  const user: AuthUser = {
+    id: getStringOrNumber(userRecord, 'id') ?? getStringOrNumber(userRecord, '_id') ?? getStringOrNumber(userRecord, 'userId'),
+    firstName: getString(userRecord, 'firstName') ?? getString(userRecord, 'firstname') ?? getString(userRecord, 'first_name'),
+    lastName: getString(userRecord, 'lastName') ?? getString(userRecord, 'lastname') ?? getString(userRecord, 'last_name'),
+    name: getString(userRecord, 'name') ?? getString(userRecord, 'fullName') ?? getString(userRecord, 'full_name'),
+    email: getString(userRecord, 'email'),
+    phone: getString(userRecord, 'phone') ?? getString(userRecord, 'phoneNumber') ?? getString(userRecord, 'mobile'),
+    dob: getString(userRecord, 'dob') ?? getString(userRecord, 'birthdate') ?? getString(userRecord, 'dateOfBirth'),
+  }
+
+  return Object.values(user).some(Boolean) ? user : undefined
 }
 
 const extractSignUpResponse = (value: unknown): SignUpResponse => {
@@ -110,6 +151,9 @@ export const signInUser = async (payload: SignInPayload) => {
   const authResponse = extractAuthResponse(response.data)
 
   saveAuthTokens(authResponse.tokens)
+  if (authResponse.user) {
+    saveAuthUser(authResponse.user)
+  }
 
   return authResponse
 }

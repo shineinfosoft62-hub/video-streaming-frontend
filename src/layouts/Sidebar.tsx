@@ -87,7 +87,7 @@ function Sidebar({ onNavigate, ...props }: SidebarProps) {
           })}
         </Stack>
 
-        <AppLogoutButton mt="auto" variant="sidebar" onLoggedOut={onNavigate} />
+        <AppLogoutButton mt="auto" mode="sidebar" onLoggedOut={onNavigate} />
       </Flex>
     </Box>
   )

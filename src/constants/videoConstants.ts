@@ -30,7 +30,7 @@ export const SHAKA_UI_CONFIG = {
   controlPanelElements: SHAKA_CONTROL_PANEL_ELEMENTS,
   overflowMenuButtons: SHAKA_OVERFLOW_MENU_BUTTONS,
   contextMenuElements: [],
-  customContextMenu: null,
+  customContextMenu: false,
   playbackRates: SHAKA_PLAYBACK_RATES,
   fastForwardRates: [2, 4, 8, 1],
   rewindRates: [-1, -2, -4, -8],

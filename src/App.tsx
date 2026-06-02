@@ -5,6 +5,7 @@ import DashboardSettings from './pages/DashboardSettings'
 import Landing from './pages/Landing'
 import VideoList from './pages/VideoList'
 import VideoUpload from './pages/VideoUpload'
+import Profile from './pages/Profile'
 import Login from './components/user/Login'
 import Register from './components/user/Register'
 import ProtectedRoute from './components/common/ProtectedRoute'
@@ -27,6 +28,14 @@ function App() {
           )}
         />
         <Route path={ROUTES.DASHBOARD_SETTINGS} element={<DashboardSettings />} />
+        <Route
+          path={ROUTES.DASHBOARD_PROFILE}
+          element={(
+            <ProtectedRoute>
+              <Profile />
+            </ProtectedRoute>
+          )}
+        />
       </Route>
       <Route path="*" element={<Navigate to={ROUTES.home} replace />} />
     </Routes>

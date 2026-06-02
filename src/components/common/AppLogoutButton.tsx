@@ -1,6 +1,6 @@
-import { Box, HStack, Icon, Stack, Text, VStack, type BoxProps, useDisclosure } from '@chakra-ui/react'
+import { Box, HStack, Icon, Stack, Text, type BoxProps, useDisclosure } from '@chakra-ui/react'
 import { useState } from 'react'
-import { FiLogOut,} from 'react-icons/fi'
+import { FiLogOut, FiShield } from 'react-icons/fi'
 import { useNavigate } from 'react-router-dom'
 import { ROUTES } from '../../constants/routes'
 import { getApiErrorMessage, logoutUser } from '../../service/auth'
@@ -9,14 +9,14 @@ import AppButton from './AppButton'
 import AppConfirmationDialog from './AppConfirmationDialog'
 import useAppToast from './useAppToast'
 
-type AppLogoutButtonVariant = 'sidebar' 
+type AppLogoutButtonMode = 'sidebar' | 'settings'
 
 type AppLogoutButtonProps = BoxProps & {
-  variant?: AppLogoutButtonVariant
+  mode?: AppLogoutButtonMode
   onLoggedOut?: () => void
 }
 
-function AppLogoutButton({ variant = 'sidebar', onLoggedOut, ...props }: AppLogoutButtonProps) {
+function AppLogoutButton({ mode = 'sidebar', onLoggedOut, ...props }: AppLogoutButtonProps) {
   const navigate = useNavigate()
   const { showApiToast } = useAppToast()
   const { isOpen, onClose, onOpen } = useDisclosure()
@@ -40,35 +40,50 @@ function AppLogoutButton({ variant = 'sidebar', onLoggedOut, ...props }: AppLogo
     }
   }
 
-  
+  const isSettingsMode = mode === 'settings'
 
   return (
     <Box
-      rounded={'xl'}
-      bg={  'whiteAlpha.100'}
+      rounded={isSettingsMode ? '2xl' : 'xl'}
+      bg={isSettingsMode ? 'rgba(225, 29, 72, 0.1)' : 'whiteAlpha.100'}
       border="1px solid"
-      borderColor={ 'whiteAlpha.100'}
-      p={ 4}
+      borderColor={isSettingsMode ? 'rgba(225, 29, 72, 0.28)' : 'whiteAlpha.100'}
+      p={isSettingsMode ? { base: 5, md: 6 } : 4}
       {...props}
     >
       <Stack
-        direction={  'column'}
-        align={ 'stretch'}
+        direction={isSettingsMode ? { base: 'column', md: 'row' } : 'column'}
+        align={isSettingsMode ? { base: 'stretch', md: 'center' } : 'stretch'}
         justify="space-between"
         spacing={4}
       >
-        <HStack spacing={4} minW={0} flex="1">
+        <HStack spacing={4} minW={0} flex="1" align="center">
+          {isSettingsMode && (
+            <Box display="grid" placeItems="center" boxSize="46px" rounded="full" bg="#e11d48" color="white" flexShrink={0}>
+              <Icon as={FiShield} boxSize={5} />
+            </Box>
+          )}
+          <Box minW={0}>
+            {isSettingsMode && (
+              <Text fontWeight="bold" color="white">
+                Account session
+              </Text>
+            )}
             <Text fontSize="sm" color="whiteAlpha.600" lineHeight="5">
-              {'End your current session.'}
+              {isSettingsMode
+                ? 'End this session securely and return to the sign in screen.'
+                : 'End your current session.'}
             </Text>
+          </Box>
        
         </HStack>
 
         <AppButton
           type="button"
           leftIcon={<Icon as={FiLogOut} />}
-          h={ '42px'}
-          w={{ base: 'full', sm:'full' }}
+          h={isSettingsMode ? '46px' : '42px'}
+          w={{ base: 'full', md: isSettingsMode ? '160px' : 'full' }}
+          flexShrink={0}
           bg="#e11d48"
           color="white"
           _hover={{ bg: '#be123c' }}

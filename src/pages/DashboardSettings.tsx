@@ -41,6 +41,10 @@ function DashboardSettings() {
           </VStack>
         ))}
       </SimpleGrid>
+
+      <Box mt={6} maxW="760px">
+        <AppLogoutButton mode="settings" />
+      </Box>
     </Box>
   )
 }

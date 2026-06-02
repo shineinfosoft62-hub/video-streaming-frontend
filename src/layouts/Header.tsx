@@ -9,13 +9,19 @@ import {
   Text,
 } from '@chakra-ui/react'
 import { HamburgerIcon, SearchIcon } from '@chakra-ui/icons'
+import { Link as RouterLink } from 'react-router-dom'
 import AppInput from '../components/common/AppInput'
+import { ROUTES } from '../constants/routes'
+import { getAuthUser, getAuthUserDisplayName } from '../service/authTokens'
 
 type HeaderProps = {
   onOpenSidebar: () => void
 }
 
 function Header({ onOpenSidebar }: HeaderProps) {
+  const user = getAuthUser()
+  const displayName = getAuthUserDisplayName(user)
+
   return (
     <Box
       as="header"
@@ -54,16 +60,22 @@ function Header({ onOpenSidebar }: HeaderProps) {
             />
           </InputGroup>
         </HStack>      
-          <HStack spacing={3} display={{ base: 'none', md: 'flex' }}>
-            <Box textAlign="right">
+          <HStack
+            as={RouterLink}
+            to={ROUTES.DASHBOARD_PROFILE}
+            spacing={3}
+            display="flex"
+            rounded="full"
+            px={2}
+            py={1}
+            _hover={{ textDecoration: 'none' }}
+          >
+            <Box textAlign="right" display={{ base: 'none', md: 'block' }}>
               <Text fontSize="sm" fontWeight="bold" color="white">
-                Admin
-              </Text>
-              <Text fontSize="xs" color="whiteAlpha.500">
-                Streaming manager
+                {displayName}
               </Text>
             </Box>
-            <Avatar name="Streaming Admin" size="sm" bg="#14b8a6" color="#041311" />
+            <Avatar name={displayName} size="sm" bg="#14b8a6" color="#041311" />
           </HStack>
       </Flex>
     </Box>
