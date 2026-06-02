@@ -1,5 +1,5 @@
 import { Avatar, Box, Divider, Heading, HStack, Icon, SimpleGrid, Stack, Text } from '@chakra-ui/react'
-import { FiCalendar, FiHash, FiMail, FiPhone, FiUser } from 'react-icons/fi'
+import { FiCalendar, FiMail, FiPhone, FiUser } from 'react-icons/fi'
 import AppBadge from '../components/common/AppBadge'
 import AppLogoutButton from '../components/common/AppLogoutButton'
 import { getAuthUser, getAuthUserDisplayName } from '../service/authTokens'
@@ -27,12 +27,6 @@ const formatDate = (value?: string) => {
 function Profile() {
   const user = getAuthUser()
   const displayName = getAuthUserDisplayName(user)
-  const initials = displayName
-    .split(' ')
-    .map((part) => part[0])
-    .join('')
-    .slice(0, 2)
-    .toUpperCase()
 
   const details = [
     { label: 'First name', value: formatValue(user?.firstName), icon: FiUser },
@@ -40,7 +34,6 @@ function Profile() {
     { label: 'Email address', value: formatValue(user?.email), icon: FiMail },
     { label: 'Phone number', value: formatValue(user?.phone), icon: FiPhone },
     { label: 'Birthdate', value: formatDate(user?.dob), icon: FiCalendar },
-  
   ]
 
   return (

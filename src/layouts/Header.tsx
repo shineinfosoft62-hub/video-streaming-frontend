@@ -4,13 +4,12 @@ import {
   Flex,
   HStack,
   IconButton,
-  InputGroup,
-  InputLeftElement,
   Text,
 } from '@chakra-ui/react'
-import { HamburgerIcon, SearchIcon } from '@chakra-ui/icons'
-import { Link as RouterLink } from 'react-router-dom'
-import AppInput from '../components/common/AppInput'
+import { HamburgerIcon } from '@chakra-ui/icons'
+import { useEffect, useState, type ChangeEvent, type FormEvent } from 'react'
+import { Link as RouterLink, useLocation, useNavigate, useSearchParams } from 'react-router-dom'
+import AppSearchInput from '../components/common/AppSearchInput'
 import { ROUTES } from '../constants/routes'
 import { getAuthUser, getAuthUserDisplayName } from '../service/authTokens'
 
@@ -21,6 +20,53 @@ type HeaderProps = {
 function Header({ onOpenSidebar }: HeaderProps) {
   const user = getAuthUser()
   const displayName = getAuthUserDisplayName(user)
+  const location = useLocation()
+  const navigate = useNavigate()
+  const [searchParams, setSearchParams] = useSearchParams()
+  const [searchValue, setSearchValue] = useState(searchParams.get('q') ?? '')
+  const isVideoListRoute = location.pathname === ROUTES.DASHBOARD
+
+  useEffect(() => {
+    setSearchValue(searchParams.get('q') ?? '')
+  }, [searchParams])
+
+  const updateSearchParam = (value: string) => {
+    const nextParams = new URLSearchParams(searchParams)
+
+    if (value.trim()) {
+      nextParams.set('q', value)
+    } else {
+      nextParams.delete('q')
+    }
+
+    setSearchParams(nextParams, { replace: true })
+  }
+
+  const handleSearchChange = (event: ChangeEvent<HTMLInputElement>) => {
+    const nextValue = event.target.value
+
+    setSearchValue(nextValue)
+    if (isVideoListRoute) {
+      updateSearchParam(nextValue)
+    }
+  }
+
+  const handleSearchSubmit = (event: FormEvent<HTMLFormElement>) => {
+    event.preventDefault()
+    const query = searchValue.trim()
+
+    navigate(query ? `${ROUTES.DASHBOARD}?q=${encodeURIComponent(query)}` : ROUTES.DASHBOARD)
+  }
+
+  const handleSearchClear = () => {
+    setSearchValue('')
+    if (isVideoListRoute) {
+      updateSearchParam('')
+      return
+    }
+
+    navigate(ROUTES.DASHBOARD)
+  }
 
   return (
     <Box
@@ -44,21 +90,15 @@ function Header({ onOpenSidebar }: HeaderProps) {
             _hover={{ bg: 'whiteAlpha.100' }}
             onClick={onOpenSidebar}
           />
-          <InputGroup maxW={{ base: 'full', md: '420px' }}>
-            <InputLeftElement pointerEvents="none">
-              <SearchIcon color="whiteAlpha.500" />
-            </InputLeftElement>
-            <AppInput
-              h="44px"
-              rounded="full"
-              bg="whiteAlpha.100"
-              borderColor="whiteAlpha.100"
-              color="white"
+          <Box as="form" w="100%" maxW={{ base: 'full', md: '520px' }} onSubmit={handleSearchSubmit}>
+            <AppSearchInput
+              value={searchValue}
               placeholder="Search videos"
-              _placeholder={{ color: 'whiteAlpha.500' }}
-              _focusVisible={{ borderColor: '#14b8a6', boxShadow: '0 0 0 1px #14b8a6' }}
+              maxW="full"
+              onChange={handleSearchChange}
+              onClear={handleSearchClear}
             />
-          </InputGroup>
+          </Box>
         </HStack>      
           <HStack
             as={RouterLink}

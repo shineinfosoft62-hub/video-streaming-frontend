@@ -1,9 +1,10 @@
-import { useCallback, useEffect, useRef, useState } from 'react'
+import { useCallback, useEffect, useMemo, useRef, useState } from 'react'
 import { Box, Heading, HStack, Text, useToast } from '@chakra-ui/react'
+import { useSearchParams } from 'react-router-dom'
 import AppBadge from '../components/common/AppBadge'
 import { AppToast } from '../components/common/appToast'
 import VideoLibrary from '../components/video/VideoLibrary'
-import { getVideos, type VideoAsset } from '../service/api'
+import { getVideoId, getVideos, type VideoAsset } from '../service/api'
 
 function VideoList() {
   const [videos, setVideos] = useState<VideoAsset[]>([])
@@ -11,6 +12,19 @@ function VideoList() {
   const [isLoadingVideos, setIsLoadingVideos] = useState(false)
   const hasLoadedVideosRef = useRef(false)
   const toast = useToast()
+  const [searchParams] = useSearchParams()
+  const searchQuery = searchParams.get('q')?.trim().toLowerCase() ?? ''
+  const filteredVideos = useMemo(() => {
+    if (!searchQuery) {
+      return videos
+    }
+
+    return videos.filter((video) =>
+      [video.title, video.description, video.createdAt]
+        .filter(Boolean)
+        .some((value) => value?.toLowerCase().includes(searchQuery)),
+    )
+  }, [searchQuery, videos])
 
   const loadVideos = useCallback(async () => {
     try {
@@ -42,6 +56,21 @@ function VideoList() {
     queueMicrotask(() => void loadVideos())
   }, [loadVideos])
 
+  useEffect(() => {
+    if (filteredVideos.length === 0) {
+      setSelectedVideo(null)
+      return
+    }
+
+    setSelectedVideo((current) => {
+      if (current && filteredVideos.some((video) => getVideoId(video) === getVideoId(current))) {
+        return current
+      }
+
+      return filteredVideos[0]
+    })
+  }, [filteredVideos])
+
   return (
     <Box>
       <HStack justify="space-between" align={{ base: 'start', md: 'center' }} spacing={4} flexWrap="wrap">
@@ -58,9 +87,10 @@ function VideoList() {
         </Box>
       </HStack>
       <VideoLibrary
-        videos={videos}
+        videos={filteredVideos}
         selectedVideo={selectedVideo}
         isLoading={isLoadingVideos}
+        searchQuery={searchParams.get('q') ?? ''}
         onRefresh={() => void loadVideos()}
         onSelectVideo={setSelectedVideo}
       />

@@ -12,6 +12,7 @@ type VideoLibraryProps = {
   videos: VideoAsset[]
   selectedVideo: VideoAsset | null
   isLoading: boolean
+  searchQuery?: string
   onRefresh: () => void
   onSelectVideo: (video: VideoAsset) => void
 }
@@ -20,6 +21,7 @@ function VideoLibrary({
   videos,
   selectedVideo,
   isLoading,
+  searchQuery = '',
   onRefresh,
   onSelectVideo,
 }: VideoLibraryProps) {
@@ -49,7 +51,9 @@ function VideoLibrary({
       <HStack justify="space-between" align={{ base: 'start', sm: 'center' }} spacing={4}>
         <Box>
           <Text mt={2} color="whiteAlpha.700">
-            Select a video from the API list and play the DASH manifest.
+            {searchQuery.trim()
+              ? `Showing results for "${searchQuery.trim()}".`
+              : 'Select a video from the API list and play the DASH manifest.'}
           </Text>
         </Box>
         <AppButton
