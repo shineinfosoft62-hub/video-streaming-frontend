@@ -7,6 +7,7 @@ import VideoList from './pages/VideoList'
 import VideoUpload from './pages/VideoUpload'
 import Login from './components/user/Login'
 import Register from './components/user/Register'
+import ProtectedRoute from './components/common/ProtectedRoute'
 
 function App() {
   return (
@@ -16,9 +17,16 @@ function App() {
       <Route path={ROUTES.SIGN_UP} element={<Register />} />
       <Route path={ROUTES.dashboard} element={<DashboardLayout />}>
         <Route index element={<Navigate to={ROUTES.DASHBOARD} replace />} />
-        <Route path="videos" element={<VideoList />} />
-        <Route path="upload" element={<VideoUpload />} />
-        <Route path="settings" element={<DashboardSettings />} />
+        <Route path={ROUTES.DASHBOARD} element={<VideoList />} />
+        <Route
+          path={ROUTES.DASHBOARD_UPLOAD}
+          element={(
+            <ProtectedRoute>
+              <VideoUpload />
+            </ProtectedRoute>
+          )}
+        />
+        <Route path={ROUTES.DASHBOARD_SETTINGS} element={<DashboardSettings />} />
       </Route>
       <Route path="*" element={<Navigate to={ROUTES.home} replace />} />
     </Routes>

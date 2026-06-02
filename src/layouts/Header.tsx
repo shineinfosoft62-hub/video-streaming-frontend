@@ -13,7 +13,7 @@ import { Link as RouterLink, useNavigate } from 'react-router-dom'
 import AppButton from '../components/common/AppButton'
 import AppInput from '../components/common/AppInput'
 import { ROUTES } from '../constants/routes'
-import { clearAuthTokens } from '../service/authTokens'
+import { clearAuthTokens, isAuthenticated } from '../service/authTokens'
 
 type HeaderProps = {
   onOpenSidebar: () => void
@@ -21,6 +21,7 @@ type HeaderProps = {
 
 function Header({ onOpenSidebar }: HeaderProps) {
   const navigate = useNavigate()
+  const hasAccessToken = isAuthenticated()
 
   const handleLogout = () => {
     clearAuthTokens()
@@ -68,18 +69,20 @@ function Header({ onOpenSidebar }: HeaderProps) {
         </HStack>
 
         <HStack spacing={3}>
-          <AppButton
-            as={RouterLink}
-            to={ROUTES.DASHBOARD_UPLOAD}
-            display={{ base: 'none', sm: 'inline-flex' }}
-            h="42px"
-            rounded="full"
-            bg="#e11d48"
-            color="white"
-            _hover={{ bg: '#be123c', textDecoration: 'none' }}
-          >
-            Upload
-          </AppButton>
+          {hasAccessToken && (
+            <AppButton
+              as={RouterLink}
+              to={ROUTES.DASHBOARD_UPLOAD}
+              display={{ base: 'none', sm: 'inline-flex' }}
+              h="42px"
+              rounded="full"
+              bg="#e11d48"
+              color="white"
+              _hover={{ bg: '#be123c', textDecoration: 'none' }}
+            >
+              Upload
+            </AppButton>
+          )}
           <HStack spacing={3} display={{ base: 'none', md: 'flex' }}>
             <Box textAlign="right">
               <Text fontSize="sm" fontWeight="bold" color="white">

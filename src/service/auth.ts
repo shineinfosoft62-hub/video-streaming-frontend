@@ -22,6 +22,10 @@ type AuthResponse = {
   tokens: AuthTokens
 }
 
+type SignUpResponse = {
+  message?: string
+}
+
 const getRecord = (value: unknown) => {
   if (typeof value === 'object' && value !== null && !Array.isArray(value)) {
     return value as Record<string, unknown>
@@ -64,6 +68,14 @@ const extractAuthResponse = (value: unknown): AuthResponse => {
   }
 }
 
+const extractSignUpResponse = (value: unknown): SignUpResponse => {
+  const record = getRecord(value)
+
+  return {
+    message: getString(record, 'message'),
+  }
+}
+
 export const getApiErrorMessage = (error: unknown) => {
   if (axios.isAxiosError(error)) {
     const record = getRecord(error.response?.data)
@@ -77,11 +89,8 @@ export const getApiErrorMessage = (error: unknown) => {
 
 export const signUpUser = async (payload: SignUpPayload) => {
   const response = await apiClient.post<unknown>(AUTH_SIGN_UP, toFormData(payload))
-  const authResponse = extractAuthResponse(response.data)
 
-  saveAuthTokens(authResponse.tokens)
-
-  return authResponse
+  return extractSignUpResponse(response.data)
 }
 
 export const signInUser = async (payload: SignInPayload) => {
