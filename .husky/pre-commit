@@ -1,1 +1,2 @@
 npm run lint
+echo "🚀 Husky verification successful. Commit approved."
