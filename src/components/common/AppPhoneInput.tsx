@@ -11,7 +11,7 @@ type AppPhoneInputProps = Omit<BoxProps, 'onChange'> & {
   value?: string
   defaultCountry?: string
   placeholder?: string
-  onChange?: (value: string, country: CountryData | {}) => void
+  onChange?: (value: string, country: CountryData | object) => void
 }
 
 function AppPhoneInput({
@@ -23,7 +23,7 @@ function AppPhoneInput({
 }: AppPhoneInputProps) {
   const [phone, setPhone] = useState(value ?? '')
 
-  const handleChange = (nextValue: string, country: CountryData | {}) => {
+  const handleChange = (nextValue: string, country: CountryData | object) => {
     setPhone(nextValue)
     onChange?.(nextValue, country)
   }

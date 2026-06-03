@@ -8,7 +8,7 @@ import { getVideoId, getVideos, type VideoAsset } from '../service/api'
 
 function VideoList() {
   const [videos, setVideos] = useState<VideoAsset[]>([])
-  const [selectedVideo, setSelectedVideo] = useState<VideoAsset | null>(null)
+  const [selectedVideoId, setSelectedVideoId] = useState<string | undefined>()
   const [isLoadingVideos, setIsLoadingVideos] = useState(false)
   const hasLoadedVideosRef = useRef(false)
   const toast = useToast()
@@ -25,6 +25,13 @@ function VideoList() {
         .some((value) => value?.toLowerCase().includes(searchQuery)),
     )
   }, [searchQuery, videos])
+  const selectedVideo = useMemo(() => {
+    if (filteredVideos.length === 0) {
+      return null
+    }
+
+    return filteredVideos.find((video) => getVideoId(video) === selectedVideoId) ?? filteredVideos[0]
+  }, [filteredVideos, selectedVideoId])
 
   const loadVideos = useCallback(async () => {
     try {
@@ -32,7 +39,7 @@ function VideoList() {
       const nextVideos = await getVideos()
 
       setVideos(nextVideos)
-      setSelectedVideo((current) => current ?? nextVideos[0] ?? null)
+      setSelectedVideoId((current) => current ?? (nextVideos[0] ? getVideoId(nextVideos[0]) : undefined))
     } catch (error) {
       const description = error instanceof Error ? error.message : 'Please check the video list API.'
 
@@ -56,21 +63,6 @@ function VideoList() {
     queueMicrotask(() => void loadVideos())
   }, [loadVideos])
 
-  useEffect(() => {
-    if (filteredVideos.length === 0) {
-      setSelectedVideo(null)
-      return
-    }
-
-    setSelectedVideo((current) => {
-      if (current && filteredVideos.some((video) => getVideoId(video) === getVideoId(current))) {
-        return current
-      }
-
-      return filteredVideos[0]
-    })
-  }, [filteredVideos])
-
   return (
     <Box>
       <HStack justify="space-between" align={{ base: 'start', md: 'center' }} spacing={4} flexWrap="wrap">
@@ -92,7 +84,7 @@ function VideoList() {
         isLoading={isLoadingVideos}
         searchQuery={searchParams.get('q') ?? ''}
         onRefresh={() => void loadVideos()}
-        onSelectVideo={setSelectedVideo}
+        onSelectVideo={(video) => setSelectedVideoId(getVideoId(video))}
       />
     </Box>
   )

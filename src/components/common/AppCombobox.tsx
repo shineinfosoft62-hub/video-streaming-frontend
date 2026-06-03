@@ -1,4 +1,4 @@
-import { useEffect, useMemo, useState, type KeyboardEvent } from 'react'
+import { useMemo, useState, type KeyboardEvent } from 'react'
 import {
   Box,
   FormControl,
@@ -77,25 +77,19 @@ function AppCombobox({
     return items.filter((item) => normalize(item.label).includes(query))
   }, [inputValue, items])
 
-  useEffect(() => {
-    setInputValue(selectedItem?.label ?? '')
-  }, [selectedItem])
-
-  useEffect(() => {
-    setHighlightedIndex(0)
-  }, [inputValue])
-
   const updateSelection = (item: AppComboboxItem | null) => {
     if (!isControlled) {
       setInternalValue(item?.value ?? '')
     }
 
     setInputValue(item?.label ?? '')
+    setHighlightedIndex(0)
     onValueChange?.(item)
   }
 
   const handleInputChange = (nextValue: string) => {
     setInputValue(nextValue)
+    setHighlightedIndex(0)
     setIsOpen(true)
     onInputValueChange?.(nextValue)
   }
