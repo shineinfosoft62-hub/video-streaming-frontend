@@ -7,7 +7,7 @@ import {
   Text,
 } from '@chakra-ui/react'
 import { HamburgerIcon } from '@chakra-ui/icons'
-import { useEffect, useState, type ChangeEvent, type FormEvent } from 'react'
+import { useState, type ChangeEvent, type FormEvent } from 'react'
 import { Link as RouterLink, useLocation, useNavigate, useSearchParams } from 'react-router-dom'
 import AppSearchInput from '../components/common/AppSearchInput'
 import { ROUTES } from '../constants/routes'
@@ -23,12 +23,9 @@ function Header({ onOpenSidebar }: HeaderProps) {
   const location = useLocation()
   const navigate = useNavigate()
   const [searchParams, setSearchParams] = useSearchParams()
-  const [searchValue, setSearchValue] = useState(searchParams.get('q') ?? '')
+  const [searchDraft, setSearchDraft] = useState(searchParams.get('q') ?? '')
   const isVideoListRoute = location.pathname === ROUTES.DASHBOARD
-
-  useEffect(() => {
-    setSearchValue(searchParams.get('q') ?? '')
-  }, [searchParams])
+  const searchValue = isVideoListRoute ? searchParams.get('q') ?? '' : searchDraft
 
   const updateSearchParam = (value: string) => {
     const nextParams = new URLSearchParams(searchParams)
@@ -45,7 +42,7 @@ function Header({ onOpenSidebar }: HeaderProps) {
   const handleSearchChange = (event: ChangeEvent<HTMLInputElement>) => {
     const nextValue = event.target.value
 
-    setSearchValue(nextValue)
+    setSearchDraft(nextValue)
     if (isVideoListRoute) {
       updateSearchParam(nextValue)
     }
@@ -59,7 +56,7 @@ function Header({ onOpenSidebar }: HeaderProps) {
   }
 
   const handleSearchClear = () => {
-    setSearchValue('')
+    setSearchDraft('')
     if (isVideoListRoute) {
       updateSearchParam('')
       return
