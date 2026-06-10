@@ -2,9 +2,10 @@ import { forwardRef } from 'react'
 import {
   Input,
   type InputProps,
+  useColorModeValue,
 } from '@chakra-ui/react'
 import AppTextarea from './AppTextarea'
-import { sharedInputStyles } from './inputStyles'
+import { focusRing } from './inputStyles'
 
 const AppInput = forwardRef<HTMLInputElement, InputProps>(function AppInput(
   {
@@ -19,15 +20,19 @@ const AppInput = forwardRef<HTMLInputElement, InputProps>(function AppInput(
   },
   ref,
 ) {
+  const defaultBg = useColorModeValue('#f7faf9', 'whiteAlpha.100')
+  const defaultColor = useColorModeValue('#172033', 'white')
+  const defaultBorderColor = useColorModeValue('blackAlpha.200', 'whiteAlpha.200')
+
   return (
     <Input
       ref={ref}
-      bg={bg ?? sharedInputStyles.bg}
-      color={color ?? sharedInputStyles.color}
-      borderColor={borderColor ?? sharedInputStyles.borderColor}
+      bg={bg ?? defaultBg}
+      color={color ?? defaultColor}
+      borderColor={borderColor ?? defaultBorderColor}
       h={h ?? '52px'}
       rounded={rounded ?? borderRadius}
-      _focusVisible={_focusVisible ?? sharedInputStyles._focusVisible}
+      _focusVisible={_focusVisible ?? focusRing}
       {...props}
     />
   )

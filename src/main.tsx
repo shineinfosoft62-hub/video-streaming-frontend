@@ -2,31 +2,16 @@ import { StrictMode } from 'react'
 import { createRoot } from 'react-dom/client'
 import './index.css'
 import App from './App.tsx'
-import { ChakraProvider, type ChakraProviderProps } from '@chakra-ui/react'
+import { ChakraProvider } from '@chakra-ui/react'
 import { BrowserRouter } from 'react-router-dom'
-
-const localStorageKeysToRemove = ['chakra-ui-color-mode', 'loglevel']
-
-const removeExtraLocalStorageKeys = () => {
-  localStorageKeysToRemove.forEach((key) => localStorage.removeItem(key))
-}
-
-const colorModeManager: ChakraProviderProps['colorModeManager'] = {
-  type: 'localStorage',
-  get: (init) => init,
-  set: () => undefined,
-}
-
-removeExtraLocalStorageKeys()
+import theme from './theme.ts'
 
 createRoot(document.getElementById('root')!).render(
   <StrictMode>
-    <ChakraProvider resetCSS={false} colorModeManager={colorModeManager}>
+    <ChakraProvider resetCSS={false} theme={theme}>
       <BrowserRouter>
         <App />
       </BrowserRouter>
     </ChakraProvider>
   </StrictMode>,
 )
-
-requestAnimationFrame(removeExtraLocalStorageKeys)

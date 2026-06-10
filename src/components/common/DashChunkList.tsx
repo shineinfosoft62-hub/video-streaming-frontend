@@ -1,5 +1,5 @@
 import { useEffect, useMemo, useState } from 'react'
-import { Box, Code, HStack, Stack, Text } from '@chakra-ui/react'
+import { Box, Code, HStack, Stack, Text, useColorModeValue } from '@chakra-ui/react'
 import AppButton from './AppButton'
 import AppSkeleton from './AppSkeleton'
 
@@ -57,6 +57,11 @@ function DashChunkList({ manifestUrl, chunks: loadedChunks, hidden = false }: Da
   const chunks = loadedChunks ?? manifestChunks
   const shouldShowLoadedChunks = Boolean(loadedChunks)
   const loadedChunkCount = loadedChunks?.length ?? 0
+  const panelBg = useColorModeValue('#f7faf9', 'whiteAlpha.100')
+  const panelBorder = useColorModeValue('blackAlpha.100', 'whiteAlpha.100')
+  const itemBg = useColorModeValue('white', 'whiteAlpha.100')
+  const headingColor = useColorModeValue('#172033', 'white')
+  const mutedColor = useColorModeValue('blackAlpha.600', 'whiteAlpha.600')
 
   const canLoadManifest = useMemo(
     () => Boolean(!hidden && !loadedChunks && manifestUrl && (isDashManifest(manifestUrl) || manifestUrl.includes('/stream'))),
@@ -105,13 +110,13 @@ function DashChunkList({ manifestUrl, chunks: loadedChunks, hidden = false }: Da
   }
 
   return (
-    <Box rounded="xl" bg="#f7faf9" border="1px solid" borderColor="blackAlpha.100" p={4}>
+    <Box rounded="xl" bg={panelBg} border="1px solid" borderColor={panelBorder} p={4}>
       <HStack justify="space-between" align="start" spacing={4}>
         <Box minW={0}>
-          <Text fontWeight="bold" color="#172033">
+          <Text fontWeight="bold" color={headingColor}>
             DASH chunks
           </Text>
-          <Text mt={1} fontSize="sm" color="blackAlpha.600" noOfLines={1}>
+          <Text mt={1} fontSize="sm" color={mutedColor} noOfLines={1}>
             {manifestUrl}
           </Text>
         </Box>
@@ -139,8 +144,8 @@ function DashChunkList({ manifestUrl, chunks: loadedChunks, hidden = false }: Da
       ) : chunks.length > 0 ? (
         <Stack mt={4} spacing={2} maxH="220px" overflowY="auto">
           {chunks.map((chunk, index) => (
-            <Box key={`${chunk.url}-${index}`} rounded="md" bg="white" p={3}>
-              <Text fontSize="sm" fontWeight="bold" color="#172033">
+            <Box key={`${chunk.url}-${index}`} rounded="md" bg={itemBg} p={3}>
+              <Text fontSize="sm" fontWeight="bold" color={headingColor}>
                 {index + 1}. {chunk.name}
               </Text>
               <Code mt={1} display="block" colorScheme="gray" whiteSpace="normal" wordBreak="break-all">
@@ -150,7 +155,7 @@ function DashChunkList({ manifestUrl, chunks: loadedChunks, hidden = false }: Da
           ))}
         </Stack>
       ) : (
-        <Text mt={4} fontSize="sm" color="blackAlpha.600">
+        <Text mt={4} fontSize="sm" color={mutedColor}>
           {shouldShowLoadedChunks ? 'Play the video to load chunks one by one.' : 'No media chunks were found in this manifest.'}
         </Text>
       )}

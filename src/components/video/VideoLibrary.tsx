@@ -1,5 +1,5 @@
 import { useCallback, useState } from 'react'
-import { Box, HStack, SimpleGrid, Stack, Text } from '@chakra-ui/react'
+import { Box, HStack, SimpleGrid, Stack, Text, useColorModeValue } from '@chakra-ui/react'
 import DashChunkList from '../../components/common/DashChunkList'
 import AppButton from '../../components/common/AppButton'
 import VideoPlayer from './VideoPlayer'
@@ -26,6 +26,11 @@ function VideoLibrary({
   onSelectVideo,
 }: VideoLibraryProps) {
   const selectedVideoUrl = getVideoPlaybackUrl(selectedVideo)
+  const cardBg = useColorModeValue('white', 'whiteAlpha.100')
+  const cardBorder = useColorModeValue('blackAlpha.100', 'whiteAlpha.100')
+  const headingColor = useColorModeValue('#172033', 'white')
+  const mutedColor = useColorModeValue('blackAlpha.600', 'whiteAlpha.600')
+  const bodyColor = useColorModeValue('blackAlpha.700', 'whiteAlpha.700')
   const [loadedChunkState, setLoadedChunkState] = useState<{ url: string; chunks: ShakaLoadedChunk[] }>({
     url: '',
     chunks: [],
@@ -50,7 +55,7 @@ function VideoLibrary({
     <Box mt={{ base: 10, lg: 14 }}>
       <HStack justify="space-between" align={{ base: 'start', sm: 'center' }} spacing={4}>
         <Box>
-          <Text mt={2} color="whiteAlpha.700">
+          <Text mt={2} color={bodyColor}>
             {searchQuery.trim()
               ? `Showing results for "${searchQuery.trim()}".`
               : 'Select a video from the API list and play the DASH manifest.'}
@@ -59,7 +64,7 @@ function VideoLibrary({
         <AppButton
           type="button"
           variant="outline"
-          borderColor="blackAlpha.300"
+          borderColor={cardBorder}
            bg="#e11d48"
            color="white"
           _hover={{ bg: '#be123c', textDecoration: 'none' }}
@@ -77,9 +82,9 @@ function VideoLibrary({
         alignItems="start"
       >
         <Box
-          bg="white"
+          bg={cardBg}
           border="1px solid"
-          borderColor="blackAlpha.100"
+          borderColor={cardBorder}
           rounded="2xl"
           p={{ base: 4, md: 5 }}
           boxShadow="0 18px 50px rgba(23, 32, 51, 0.08)"
@@ -93,16 +98,16 @@ function VideoLibrary({
                 />
                 <DashChunkList manifestUrl={selectedVideoUrl} chunks={loadedChunks} hidden />
                 <Box>
-                  <Text fontSize={{ base: 'lg', md: '2xl' }} fontWeight="bold" color="#172033" noOfLines={2}>
+                  <Text fontSize={{ base: 'lg', md: '2xl' }} fontWeight="bold" color={headingColor} noOfLines={2}>
                     {selectedVideo?.title}
                   </Text>
-                  <Text mt={2} fontSize="sm" color="blackAlpha.600">
+                  <Text mt={2} fontSize="sm" color={mutedColor}>
                     {[formatFileSize(selectedVideo?.size), formatDate(selectedVideo?.createdAt)]
                       .filter(Boolean)
                       .join(' - ')}
                   </Text>
                   {selectedVideo?.description && (
-                    <Text mt={3} color="blackAlpha.700" lineHeight="7">
+                    <Text mt={3} color={bodyColor} lineHeight="7">
                       {selectedVideo.description}
                     </Text>
                   )}

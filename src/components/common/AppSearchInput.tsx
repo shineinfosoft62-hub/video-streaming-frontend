@@ -4,6 +4,7 @@ import {
   InputLeftElement,
   InputRightElement,
   type InputProps,
+  useColorModeValue,
 } from '@chakra-ui/react'
 import { SearchIcon } from '@chakra-ui/icons'
 import AppInput from './AppInput'
@@ -27,11 +28,19 @@ function AppSearchInput({
   ...props
 }: AppSearchInputProps) {
   const hasValue = typeof value === 'string' && value.length > 0
+  const defaultBg = useColorModeValue('white', 'whiteAlpha.100')
+  const defaultBorderColor = useColorModeValue('blackAlpha.200', 'whiteAlpha.100')
+  const defaultColor = useColorModeValue('#172033', 'white')
+  const iconColor = useColorModeValue('blackAlpha.500', 'whiteAlpha.500')
+  const placeholderColor = useColorModeValue('blackAlpha.500', 'whiteAlpha.500')
+  const clearColor = useColorModeValue('blackAlpha.600', 'whiteAlpha.700')
+  const clearHoverColor = useColorModeValue('#172033', 'white')
+  const clearHoverBg = useColorModeValue('blackAlpha.100', 'whiteAlpha.100')
 
   return (
     <InputGroup maxW={maxW}>
       <InputLeftElement pointerEvents="none" h={h ?? '44px'} w="46px">
-        <SearchIcon color="whiteAlpha.500" />
+        <SearchIcon color={iconColor} />
       </InputLeftElement>
       <AppInput
         type="text"
@@ -39,19 +48,19 @@ function AppSearchInput({
         value={value}
         h={h ?? '44px'}
         rounded={rounded ?? 'full'}
-        bg={bg ?? 'whiteAlpha.100'}
-        borderColor={borderColor ?? 'whiteAlpha.100'}
-        color={color ?? 'white'}
+        bg={bg ?? defaultBg}
+        borderColor={borderColor ?? defaultBorderColor}
+        color={color ?? defaultColor}
         placeholder={placeholder}
         pl="46px"
         pr={hasValue ? 10 : undefined}
-        _placeholder={_placeholder ?? { color: 'whiteAlpha.500' }}
+        _placeholder={_placeholder ?? { color: placeholderColor }}
         _focusVisible={_focusVisible ?? { borderColor: '#14b8a6', boxShadow: '0 0 0 1px #14b8a6' }}
         {...props}
       />
       {hasValue && onClear && (
         <InputRightElement h={h ?? '44px'}>
-          <CloseButton size="sm" color="whiteAlpha.700" _hover={{ color: 'white', bg: 'whiteAlpha.100' }} onClick={onClear} />
+          <CloseButton size="sm" color={clearColor} _hover={{ color: clearHoverColor, bg: clearHoverBg }} onClick={onClear} />
         </InputRightElement>
       )}
     </InputGroup>

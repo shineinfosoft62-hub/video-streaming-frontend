@@ -1,4 +1,4 @@
-import { Box, type BoxProps } from '@chakra-ui/react'
+import { Box, type BoxProps, useColorModeValue } from '@chakra-ui/react'
 import { useState, type ComponentType } from 'react'
 import PhoneInputModule, { type CountryData, type PhoneInputProps } from 'react-phone-input-2'
 import 'react-phone-input-2/lib/style.css'
@@ -22,6 +22,12 @@ function AppPhoneInput({
   ...boxProps
 }: AppPhoneInputProps) {
   const [phone, setPhone] = useState(value ?? '')
+  const inputBg = useColorModeValue('#f7faf9', 'rgba(255, 255, 255, 0.08)')
+  const inputBorder = useColorModeValue('rgba(0, 0, 0, 0.16)', 'rgba(255, 255, 255, 0.2)')
+  const inputColor = useColorModeValue('#172033', '#ffffff')
+  const hoverBg = useColorModeValue('#e6f0ed', 'rgba(255, 255, 255, 0.12)')
+  const dropdownBg = useColorModeValue('#ffffff', '#111827')
+  const mutedColor = useColorModeValue('#687587', '#cbd5e1')
 
   const handleChange = (nextValue: string, country: CountryData | object) => {
     setPhone(nextValue)
@@ -38,10 +44,10 @@ function AppPhoneInput({
         '.react-tel-input .form-control': {
           width: '100%',
           height: '52px',
-          background: '#f7faf9',
-          borderColor: 'rgba(0, 0, 0, 0.16)',
+          background: inputBg,
+          borderColor: inputBorder,
           borderRadius: '6px',
-          color: '#172033',
+          color: inputColor,
           fontSize: '16px',
           paddingLeft: '64px',
         },
@@ -50,8 +56,8 @@ function AppPhoneInput({
           boxShadow: '0 0 0 1px #315f57',
         },
         '.react-tel-input .flag-dropdown': {
-          background: '#f7faf9',
-          borderColor: 'rgba(0, 0, 0, 0.16)',
+          background: inputBg,
+          borderColor: inputBorder,
           borderRadius: '6px 0 0 6px',
         },
         '.react-tel-input .selected-flag': {
@@ -59,16 +65,17 @@ function AppPhoneInput({
           borderRadius: '6px 0 0 6px',
         },
         '.react-tel-input .selected-flag:hover, .react-tel-input .selected-flag:focus, .react-tel-input .flag-dropdown.open .selected-flag': {
-          background: '#e6f0ed',
+          background: hoverBg,
         },
         '.react-tel-input .country-list': {
           width: '320px',
           maxWidth: 'calc(100vw - 48px)',
           marginTop: '8px',
           borderRadius: '6px',
-          border: '1px solid rgba(0, 0, 0, 0.12)',
+          background: dropdownBg,
+          border: `1px solid ${inputBorder}`,
           boxShadow: '0 18px 36px rgba(15, 23, 42, 0.18)',
-          color: '#172033',
+          color: inputColor,
         },
         '.react-tel-input .country-list .search': {
           padding: '12px 12px 8px',
@@ -76,9 +83,10 @@ function AppPhoneInput({
         '.react-tel-input .country-list .search-box': {
           width: 'calc(100% - 32px)',
           height: '38px',
-          borderColor: 'rgba(0, 0, 0, 0.18)',
+          background: inputBg,
+          borderColor: inputBorder,
           borderRadius: '6px',
-          color: '#172033',
+          color: inputColor,
           fontSize: '15px',
           marginLeft: '8px',
         },
@@ -94,15 +102,15 @@ function AppPhoneInput({
           padding: '8px 12px',
         },
         '.react-tel-input .country-list .country:hover, .react-tel-input .country-list .country.highlight': {
-          background: '#e6f0ed',
+          background: hoverBg,
         },
         '.react-tel-input .country-list .country-name': {
-          color: '#172033',
+          color: inputColor,
           fontWeight: 600,
           marginLeft: '10px',
         },
         '.react-tel-input .country-list .dial-code': {
-          color: '#687587',
+          color: mutedColor,
           marginLeft: '8px',
         },
       }}

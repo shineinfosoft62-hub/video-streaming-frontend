@@ -6,6 +6,7 @@ import {
   AlertDialogHeader,
   AlertDialogOverlay,
   type AlertDialogProps,
+  useColorModeValue,
 } from '@chakra-ui/react'
 import { useRef } from 'react'
 import AppButton from './AppButton'
@@ -32,6 +33,12 @@ function AppConfirmationDialog({
   onConfirm,
 }: AppConfirmationDialogProps) {
   const cancelRef = useRef<HTMLButtonElement>(null)
+  const contentBg = useColorModeValue('white', '#111827')
+  const contentColor = useColorModeValue('#172033', 'white')
+  const borderColor = useColorModeValue('blackAlpha.100', 'whiteAlpha.200')
+  const bodyColor = useColorModeValue('blackAlpha.700', 'whiteAlpha.700')
+  const cancelBg = useColorModeValue('blackAlpha.50', 'whiteAlpha.100')
+  const cancelHoverBg = useColorModeValue('blackAlpha.100', 'whiteAlpha.200')
 
   return (
     <AlertDialog
@@ -41,12 +48,12 @@ function AppConfirmationDialog({
       isCentered
     >
       <AlertDialogOverlay bg="blackAlpha.700" backdropFilter="blur(8px)">
-        <AlertDialogContent bg="#111827" color="white" border="1px solid" borderColor="whiteAlpha.200">
+        <AlertDialogContent bg={contentBg} color={contentColor} border="1px solid" borderColor={borderColor}>
           <AlertDialogHeader fontSize="lg" fontWeight="bold">
             {title}
           </AlertDialogHeader>
 
-          <AlertDialogBody color="whiteAlpha.700">
+          <AlertDialogBody color={bodyColor}>
             {message}
           </AlertDialogBody>
 
@@ -55,9 +62,9 @@ function AppConfirmationDialog({
               ref={cancelRef}
               type="button"
               variant="ghost"
-              bg="whiteAlpha.100"
-              color="white"
-              _hover={{ bg: 'whiteAlpha.200' }}
+              bg={cancelBg}
+              color={contentColor}
+              _hover={{ bg: cancelHoverBg }}
               onClick={onClose}
             >
               {cancelLabel}

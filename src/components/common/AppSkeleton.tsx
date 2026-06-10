@@ -1,4 +1,4 @@
-import { Skeleton, type SkeletonProps } from '@chakra-ui/react'
+import { Skeleton, type SkeletonProps, useColorModeValue } from '@chakra-ui/react'
 
 function AppSkeleton({
   rounded,
@@ -8,11 +8,14 @@ function AppSkeleton({
   speed,
   ...props
 }: SkeletonProps) {
+  const defaultStartColor = useColorModeValue('blackAlpha.100', 'whiteAlpha.100')
+  const defaultEndColor = useColorModeValue('blackAlpha.200', 'whiteAlpha.300')
+
   return (
     <Skeleton
       rounded={rounded ?? borderRadius ?? 'md'}
-      startColor={startColor ?? 'whiteAlpha.100'}
-      endColor={endColor ?? 'whiteAlpha.300'}
+      startColor={startColor ?? defaultStartColor}
+      endColor={endColor ?? defaultEndColor}
       speed={speed ?? 0.9}
       {...props}
     />
