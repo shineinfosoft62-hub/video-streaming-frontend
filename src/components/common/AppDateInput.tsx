@@ -9,6 +9,7 @@ import {
   PopoverTrigger,
   Portal,
   type InputProps,
+  useColorModeValue,
 } from '@chakra-ui/react'
 import { useMemo, useState, type ClipboardEvent, type KeyboardEvent } from 'react'
 import Calendar from 'react-calendar'
@@ -78,6 +79,10 @@ function AppDateInput({
   const [isOpen, setIsOpen] = useState(false)
   const inputValue = isControlled ? value : internalValue
   const selectedDate = useMemo(() => parseDate(inputValue), [inputValue])
+  const iconColor = useColorModeValue('#315f57', '#38bdf8')
+  const popoverBorder = useColorModeValue('blackAlpha.200', 'whiteAlpha.200')
+  const calendarBg = useColorModeValue('white', '#111827')
+  const calendarColor = useColorModeValue('#172033', 'white')
 
   const updateValue = (nextValue: string, nextDate: Date | null) => {
     if (!isControlled) {
@@ -160,7 +165,7 @@ function AppDateInput({
                 icon={<LuCalendar />}
                 size="sm"
                 variant="ghost"
-                color="#315f57"
+                color={iconColor}
                 onClick={() => setIsOpen((current) => !current)}
               />
             </InputRightElement>
@@ -170,14 +175,14 @@ function AppDateInput({
       <Portal>
         <PopoverContent
           w="fit-content"
-          borderColor="blackAlpha.200"
+          borderColor={popoverBorder}
           boxShadow="xl"
           overflow="hidden"
           _focusVisible={{ boxShadow: 'xl' }}
         >
           <Box
-            bg="white"
-            color="#172033"
+            bg={calendarBg}
+            color={calendarColor}
           >
             <Calendar
               value={selectedDate}

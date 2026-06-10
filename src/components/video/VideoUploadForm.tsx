@@ -11,6 +11,7 @@ import {
   Progress,
   Stack,
   Text,
+  useColorModeValue,
   useToast,
 } from '@chakra-ui/react'
 import { SmallCloseIcon } from '@chakra-ui/icons'
@@ -105,6 +106,14 @@ function VideoUploadForm({ onUploaded }: VideoUploadFormProps) {
   const [uploadProgress, setUploadProgress] = useState(uploadRuntime.progress)
   const fileInputRef = useRef<HTMLInputElement | null>(null)
   const toast = useToast()
+  const cardBg = useColorModeValue('white', 'whiteAlpha.100')
+  const borderColor = useColorModeValue('blackAlpha.100', 'whiteAlpha.100')
+  const headingColor = useColorModeValue('#172033', 'white')
+  const mutedColor = useColorModeValue('blackAlpha.600', 'whiteAlpha.600')
+  const dropzoneBg = useColorModeValue('#f7faf9', 'whiteAlpha.100')
+  const dropzoneBorder = useColorModeValue('blackAlpha.300', 'whiteAlpha.300')
+  const submitBg = useColorModeValue('#171514', '#e11d48')
+  const submitHoverBg = useColorModeValue('#254b45', '#be123c')
 
   const videoPreviewUrl = useMemo(() => {
     if (!values.video) {
@@ -270,9 +279,9 @@ function VideoUploadForm({ onUploaded }: VideoUploadFormProps) {
     <Box
       as="form"
       onSubmit={handleSubmit}
-      bg="white"
+      bg={cardBg}
       border="1px solid"
-      borderColor="blackAlpha.100"
+      borderColor={borderColor}
       rounded="2xl"
       p={{ base: 5, md: 8 }}
       boxShadow="0 24px 70px rgba(23, 32, 51, 0.12)"
@@ -288,7 +297,7 @@ function VideoUploadForm({ onUploaded }: VideoUploadFormProps) {
 
       <Stack spacing={5}>
         <FormControl isInvalid={Boolean(errors.title)} isRequired>
-          <FormLabel fontWeight="bold" color="#172033">
+          <FormLabel fontWeight="bold" color={headingColor}>
             Video title
           </FormLabel>
           <AppInput
@@ -301,7 +310,7 @@ function VideoUploadForm({ onUploaded }: VideoUploadFormProps) {
         </FormControl>
 
         <FormControl isInvalid={Boolean(errors.description)} isRequired>
-          <FormLabel fontWeight="bold" color="#172033">
+          <FormLabel fontWeight="bold" color={headingColor}>
             Description
           </FormLabel>
           <AppTextarea
@@ -316,14 +325,14 @@ function VideoUploadForm({ onUploaded }: VideoUploadFormProps) {
         </FormControl>
 
         <FormControl isInvalid={Boolean(errors.video)} isRequired>
-          <FormLabel fontWeight="bold" color="#172033">
+          <FormLabel fontWeight="bold" color={headingColor}>
             Video file
           </FormLabel>
           <Box
             border="2px dashed"
-            borderColor={errors.video ? 'red.300' : 'blackAlpha.300'}
+            borderColor={errors.video ? 'red.300' : dropzoneBorder}
             rounded="xl"
-            bg="#f7faf9"
+            bg={dropzoneBg}
             p={5}
           >
             <AppInput
@@ -345,7 +354,7 @@ function VideoUploadForm({ onUploaded }: VideoUploadFormProps) {
                     <Text fontWeight="bold" noOfLines={1}>
                       {displayVideo?.name}
                     </Text>
-                    <Text fontSize="sm" color="blackAlpha.600">
+                    <Text fontSize="sm" color={mutedColor}>
                       {((displayVideo?.size ?? 0) / 1024 / 1024).toFixed(2)}MB
                     </Text>
                   </Box>
@@ -369,10 +378,10 @@ function VideoUploadForm({ onUploaded }: VideoUploadFormProps) {
               </Stack>
             ) : (
               <Stack align="center" spacing={3} py={6} textAlign="center">
-                <Text fontWeight="bold" color="#172033">
+                <Text fontWeight="bold" color={headingColor}>
                   Choose your video file
                 </Text>
-                <Text fontSize="sm" color="blackAlpha.600">
+                <Text fontSize="sm" color={mutedColor}>
                   MP4, WebM, or MOV up to 100MB
                 </Text>
                 <AppButton
@@ -394,12 +403,12 @@ function VideoUploadForm({ onUploaded }: VideoUploadFormProps) {
         <AppButton
           type="submit"
           h="54px"
-          bg="#171514"
+          bg={submitBg}
           color="white"
           fontWeight="bold"
           isLoading={isUploading}
           loadingText="Uploading"
-          _hover={{ bg: '#254b45' }}
+          _hover={{ bg: submitHoverBg }}
         >
           Upload Video
         </AppButton>

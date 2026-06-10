@@ -1,5 +1,5 @@
 import { useCallback, useEffect, useMemo, useRef, useState } from 'react'
-import { Box, Heading, HStack, Text, useToast } from '@chakra-ui/react'
+import { Box, Heading, HStack, Text, useColorModeValue, useToast } from '@chakra-ui/react'
 import { useSearchParams } from 'react-router-dom'
 import AppBadge from '../components/common/AppBadge'
 import { AppToast } from '../components/common/appToast'
@@ -13,6 +13,8 @@ function VideoList() {
   const hasLoadedVideosRef = useRef(false)
   const toast = useToast()
   const [searchParams] = useSearchParams()
+  const headingColor = useColorModeValue('#172033', 'white')
+  const textColor = useColorModeValue('blackAlpha.700', 'whiteAlpha.700')
   const searchQuery = searchParams.get('q')?.trim().toLowerCase() ?? ''
   const filteredVideos = useMemo(() => {
     if (!searchQuery) {
@@ -70,10 +72,10 @@ function VideoList() {
           <AppBadge>
             Start watching
           </AppBadge>
-          <Heading as="h1" mt={4} fontSize={{ base: '3xl', md: '5xl' }} lineHeight="1" color="white">
+          <Heading as="h1" mt={4} fontSize={{ base: '3xl', md: '5xl' }} lineHeight="1" color={headingColor}>
             Video list
           </Heading>
-          <Text mt={3} maxW="640px" color="whiteAlpha.700" lineHeight="7">
+          <Text mt={3} maxW="640px" color={textColor} lineHeight="7">
             Browse uploaded videos, preview DASH playback, and inspect the generated media chunks from one responsive dashboard view.
           </Text>
         </Box>

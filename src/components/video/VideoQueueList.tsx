@@ -1,5 +1,5 @@
 import { useEffect, useMemo, useRef, useState } from 'react'
-import { AspectRatio, Box, HStack, Icon, Stack, Text } from '@chakra-ui/react'
+import { AspectRatio, Box, HStack, Icon, Stack, Text, useColorModeValue } from '@chakra-ui/react'
 import shaka from 'shaka-player/dist/shaka-player.dash'
 import { FaPlay, FaVolumeUp } from 'react-icons/fa'
 import AppButton from '../common/AppButton'
@@ -281,14 +281,20 @@ function VideoThumbnail({
 
 function VideoQueueList({ videos, selectedVideo, isLoading, onSelectVideo }: VideoQueueListProps) {
   const [activePreviewId, setActivePreviewId] = useState('')
+  const headingColor = useColorModeValue('#172033', 'white')
+  const mutedColor = useColorModeValue('blackAlpha.600', 'whiteAlpha.600')
+  const itemBg = useColorModeValue('blackAlpha.50', 'whiteAlpha.100')
+  const itemBorder = useColorModeValue('blackAlpha.100', 'whiteAlpha.200')
+  const hoverBg = useColorModeValue('blackAlpha.100', 'whiteAlpha.100')
+  const emptyBg = useColorModeValue('#f7faf9', 'whiteAlpha.100')
 
   return (
     <Box bg="transparent" p={0}>
       <HStack px={1} mb={3} justify="space-between" align="center">
-        <Text fontWeight="bold" color="white">
+        <Text fontWeight="bold" color={headingColor}>
           Up next
         </Text>
-        <Text fontSize="sm" color="whiteAlpha.600">
+        <Text fontSize="sm" color={mutedColor}>
           {videos.length} videos
         </Text>
       </HStack>
@@ -318,14 +324,14 @@ function VideoQueueList({ videos, selectedVideo, isLoading, onSelectVideo }: Vid
                 justifyContent="flex-start"
                 textAlign="left"
                 whiteSpace="normal"
-                bg={isSelected ? 'whiteAlpha.100' : 'transparent'}
-                color="white"
+                bg={isSelected ? itemBg : 'transparent'}
+                color={headingColor}
                 p={0}
                 rounded="md"
                 w="100%"
                 border="1px solid"
-                borderColor={isSelected ? 'whiteAlpha.200' : 'transparent'}
-                _hover={{ bg: 'whiteAlpha.100', borderColor: 'whiteAlpha.200' }}
+                borderColor={isSelected ? itemBorder : 'transparent'}
+                _hover={{ bg: hoverBg, borderColor: itemBorder }}
                 onBlur={() => setActivePreviewId('')}
                 onClick={() => onSelectVideo(video)}
                 onFocus={() => setActivePreviewId(videoId)}
@@ -345,11 +351,11 @@ function VideoQueueList({ videos, selectedVideo, isLoading, onSelectVideo }: Vid
                     </Box>
                   </AspectRatio>
                   <Box minW={0} flex="1" pt={0.5} pr={1}>
-                    <Text fontWeight="bold" noOfLines={2} lineHeight="5" color="white" fontSize="sm">
+                    <Text fontWeight="bold" noOfLines={2} lineHeight="5" color={headingColor} fontSize="sm">
                       {video.title}
                     </Text>
                     {metaText && (
-                      <Text mt={1} fontSize="xs" color="whiteAlpha.600" noOfLines={2} lineHeight="5" fontWeight="semibold">
+                      <Text mt={1} fontSize="xs" color={mutedColor} noOfLines={2} lineHeight="5" fontWeight="semibold">
                         {metaText}
                       </Text>
                     )}
@@ -360,11 +366,11 @@ function VideoQueueList({ videos, selectedVideo, isLoading, onSelectVideo }: Vid
           })}
         </Stack>
       ) : (
-        <Box rounded="xl" bg="#f7faf9" p={6} textAlign="center">
-          <Text fontWeight="bold" color="#172033">
+        <Box rounded="xl" bg={emptyBg} p={6} textAlign="center">
+          <Text fontWeight="bold" color={headingColor}>
             No videos found
           </Text>
-          <Text mt={2} fontSize="sm" color="blackAlpha.600">
+          <Text mt={2} fontSize="sm" color={mutedColor}>
             Upload a video or check that your API returns videos correctly.
           </Text>
         </Box>

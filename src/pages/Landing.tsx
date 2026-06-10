@@ -12,12 +12,14 @@ import {
   SimpleGrid,
   Stack,
   Text,
+  useColorModeValue,
 } from '@chakra-ui/react'
 import { Link as RouterLink } from 'react-router-dom'
 import AppBadge from '../components/common/AppBadge'
 import AppButton from '../components/common/AppButton'
 import AppInput from '../components/common/AppInput'
 import AppTextarea from '../components/common/AppTextarea'
+import ColorModeButton from '../components/common/ColorModeButton'
 import { ROUTES } from '../constants/routes'
 import { navItems, collections,features, } from '../constants/landingdata'
 
@@ -64,16 +66,36 @@ function ShinyButton({ children, to, ...props }: ButtonProps & { to: string }) {
 }
 
 function Landing() {
+  const pageBg = useColorModeValue('#f6f8fb', '#0b0d12')
+  const pageColor = useColorModeValue('#172033', 'white')
+  const headerBg = useColorModeValue('rgba(255, 255, 255, 0.86)', 'rgba(11, 13, 18, 0.86)')
+  const headerBorder = useColorModeValue('blackAlpha.100', 'whiteAlpha.200')
+  const navColor = useColorModeValue('blackAlpha.700', 'whiteAlpha.700')
+  const navHoverColor = useColorModeValue('#172033', 'white')
+  const textColor = useColorModeValue('blackAlpha.700', 'whiteAlpha.700')
+  const outlineBorder = useColorModeValue('blackAlpha.300', 'whiteAlpha.300')
+  const outlineHoverBg = useColorModeValue('blackAlpha.100', 'whiteAlpha.100')
+  const sectionBg = useColorModeValue('linear-gradient(135deg, #ffffff 0%, #f7f3f6 50%, #eef6f5 100%)', 'linear-gradient(135deg, #111827 0%, #251026 50%, #111827 100%)')
+  const featureCardBg = useColorModeValue('white', 'rgba(255,255,255,0.08)')
+  const featureCardBorder = useColorModeValue('blackAlpha.100', 'whiteAlpha.200')
+  const featureCardColor = useColorModeValue('#172033', 'white')
+  const featureDescriptionColor = useColorModeValue('blackAlpha.700', 'whiteAlpha.800')
+  const contactBg = useColorModeValue('#eef2f7', 'linear-gradient(180deg, rgba(11,13,18,0.94), rgba(11,13,18,0.82)), url(https://images.unsplash.com/photo-1522869635100-9f4c5e86aa37?auto=format&fit=crop&w=1800&q=80)')
+  const contactCardBg = useColorModeValue('white', 'rgba(13, 16, 24, 0.82)')
+  const contactCardBorder = useColorModeValue('blackAlpha.100', 'whiteAlpha.200')
+  const footerBg = useColorModeValue('white', '#05070c')
+  const footerColor = useColorModeValue('blackAlpha.700', 'whiteAlpha.800')
+
   return (
-      <Box minH="100vh" bg="#0b0d12" color="white">
+      <Box minH="100vh" bg={pageBg} color={pageColor}>
       <Box
         as="header"
         position="sticky"
         top="0"
         zIndex="50"
         borderBottom="1px solid"
-        borderColor="whiteAlpha.200"
-        bg="rgba(11, 13, 18, 0.86)"
+        borderColor={headerBorder}
+        bg={headerBg}
         backdropFilter="blur(18px)"
       >
         <Container maxW="7xl" px={{ base: 5, md: 8 }} py={4}>
@@ -92,7 +114,7 @@ function Landing() {
               display={{ base: 'none', md: 'flex' }}
               align="center"
               gap={7}
-              color="whiteAlpha.700"
+              color={navColor}
               fontSize="sm"
               fontWeight="semibold"
             >
@@ -100,7 +122,7 @@ function Landing() {
                 <Link
                   key={item.href}
                   href={item.href}
-                  _hover={{ color: 'white', textDecoration: 'none' }}
+                  _hover={{ color: navHoverColor, textDecoration: 'none' }}
                 >
                   {item.label}
                 </Link>
@@ -113,17 +135,18 @@ function Landing() {
                 to={ROUTES.SIGN_UP}
                 rounded="full"
                 bg="transparent"
-                color="white"
+                color={pageColor}
                 h="42px"
                 px={5}
                 fontSize="sm"
                 border="1px solid"
-                borderColor="whiteAlpha.300"
+                borderColor={outlineBorder}
                 display={{ base: 'none', sm: 'inline-flex' }}
-                _hover={{ bg: 'whiteAlpha.100', textDecoration: 'none' }}
+                _hover={{ bg: outlineHoverBg, textDecoration: 'none' }}
               >
                 Sign Up
               </AppButton>
+              <ColorModeButton />
               <ShinyButton to={ROUTES.SIGN_IN}>
                 Sign in
               </ShinyButton>
@@ -170,7 +193,7 @@ function Landing() {
               Stream movies, series, and live moments in one place.
             </Heading>
 
-            <Text mt={7} maxW="620px" fontSize="lg" lineHeight="8" color="whiteAlpha.700">
+            <Text mt={7} maxW="620px" fontSize="lg" lineHeight="8" color={textColor}>
               A cinematic streaming platform for binge-worthy originals, live
               events, family profiles, and watchlists that follow you from
               phone to living room.
@@ -188,10 +211,10 @@ function Landing() {
                 rounded="full"
                 bg="transparent"
                 border="1px solid"
-                borderColor="whiteAlpha.300"
-                color="white"
+                borderColor={outlineBorder}
+                color={pageColor}
                 fontWeight="bold"
-                _hover={{ bg: 'whiteAlpha.100', textDecoration: 'none' }}
+                _hover={{ bg: outlineHoverBg, textDecoration: 'none' }}
               >
                 Sign Up
               </AppButton>
@@ -205,8 +228,8 @@ function Landing() {
       <Box
         as="section"
         id="about"
-        bg="linear-gradient(135deg, #111827 0%, #251026 50%, #111827 100%)"
-        color="white"
+        bg={sectionBg}
+        color={pageColor}
         px={{ base: 5, md: 8 }}
         py={20}
       >
@@ -235,7 +258,7 @@ function Landing() {
               >
                 Entertainment that feels personal the second you press play.
               </Heading>
-              <Text mt={6} maxW="560px" color="whiteAlpha.700" lineHeight="8">
+              <Text mt={6} maxW="560px" color={textColor} lineHeight="8">
                 Streamly brings movies, series, live sports, and kids content
                 into a clean streaming experience with sharp discovery, fast
                 playback, and profiles for every viewer.
@@ -285,9 +308,9 @@ function Landing() {
                 minH="260px"
                 rounded="3xl"
                 border="1px solid"
-                borderColor="whiteAlpha.200"
-                bg={index === 1 ? '#e11d48' : 'rgba(255,255,255,0.08)'}
-                color="white"
+                borderColor={featureCardBorder}
+                bg={index === 1 ? '#e11d48' : featureCardBg}
+                color={index === 1 ? 'white' : featureCardColor}
                 p={7}
                 boxShadow="xl"
               >
@@ -304,7 +327,7 @@ function Landing() {
                 <Text
                   mt={4}
                   lineHeight="7"
-                  color="whiteAlpha.800"
+                  color={index === 1 ? 'whiteAlpha.800' : featureDescriptionColor}
                 >
                   {feature.description}
                 </Text>
@@ -325,7 +348,7 @@ function Landing() {
         id="contact"
         px={{ base: 5, md: 8 }}
         py={{ base: 16, lg: 24 }}
-        bgImage="linear-gradient(180deg, rgba(11,13,18,0.94), rgba(11,13,18,0.82)), url(https://images.unsplash.com/photo-1522869635100-9f4c5e86aa37?auto=format&fit=crop&w=1800&q=80)"
+        bg={contactBg}
         bgSize="cover"
         bgPosition="center"
         bgAttachment={{ base: 'scroll', lg: 'fixed' }}
@@ -334,9 +357,9 @@ function Landing() {
           <Grid
             overflow="hidden"
             rounded={{ base: '28px', lg: '32px' }}
-            bg="rgba(13, 16, 24, 0.82)"
+            bg={contactCardBg}
             border="1px solid"
-            borderColor="whiteAlpha.200"
+            borderColor={contactCardBorder}
             boxShadow="0 30px 90px rgba(0, 0, 0, 0.38)"
             backdropFilter="blur(14px)"
             templateColumns={{ base: '1fr', lg: '0.95fr 1.05fr' }}
@@ -478,7 +501,7 @@ function Landing() {
         </Container>
       </Box>
 
-      <Box as="footer" bg="#05070c" color="whiteAlpha.800" px={{ base: 5, md: 8 }} py={8}>
+      <Box as="footer" bg={footerBg} color={footerColor} px={{ base: 5, md: 8 }} py={8}>
         <Container maxW="7xl" px={0}>
           <Flex
             direction={{ base: 'column', sm: 'row' }}
@@ -490,7 +513,7 @@ function Landing() {
             <Text>(c) 2026 Streamly. All rights reserved.</Text>
             <Flex gap={5}>
               {navItems.slice(1).map((item) => (
-                <Link key={item.href} href={item.href} _hover={{ color: 'white' }}>
+                <Link key={item.href} href={item.href} _hover={{ color: navHoverColor }}>
                   {item.label.replace(' Us', '')}
                 </Link>
               ))}
@@ -503,13 +526,16 @@ function Landing() {
 }
 
 function StreamingWall() {
+  const wallBg = useColorModeValue('#e6edf3', '#171923')
+  const floatingCardBg = useColorModeValue('rgba(255,255,255,0.94)', 'rgba(255,255,255,0.94)')
+
   return (
     <Box position="relative" minH={{ base: '560px', md: '680px' }}>
       <Box
         position="absolute"
         inset={{ base: '24px 0 0 0', md: '40px 30px 0 40px' }}
         rounded="40px"
-        bg="#171923"
+        bg={wallBg}
       />
       <Artwork
         top="0"
@@ -540,7 +566,7 @@ function StreamingWall() {
         right={{ base: '18px', md: '70px' }}
         bottom={{ base: '44px', md: '70px' }}
         rounded="3xl"
-        bg="rgba(255,255,255,0.94)"
+        bg={floatingCardBg}
         color="#111827"
         p={5}
         maxW="270px"
@@ -569,6 +595,8 @@ function Artwork({
   image: string
   label: string
 } & BoxProps) {
+  const borderColor = useColorModeValue('#f6f8fb', '#0b0d12')
+
   return (
     <Box
       position="absolute"
@@ -579,7 +607,7 @@ function Artwork({
       bgPosition="center"
       boxShadow="2xl"
       border="8px solid"
-      borderColor="#0b0d12"
+      borderColor={borderColor}
       {...props}
     >
       <Flex
