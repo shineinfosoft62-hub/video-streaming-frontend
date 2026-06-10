@@ -11,6 +11,7 @@ import {
   Progress,
   Stack,
   Text,
+  useColorModeValue,
   useToast,
 } from '@chakra-ui/react'
 import { SmallCloseIcon } from '@chakra-ui/icons'
@@ -77,8 +78,10 @@ const maxVideoSize = 500 * 1024 * 1024
 const allowedVideoTypes = ['video/mp4', 'video/webm', 'video/quicktime']
 
 function LocalVideoPreview({ src, title }: { src: string; title: string }) {
+  const borderColor = useColorModeValue('blackAlpha.200', 'whiteAlpha.200')
+
   return (
-    <Box overflow="hidden" rounded="lg" bg="#111" border="1px solid" borderColor="blackAlpha.200">
+    <Box overflow="hidden" rounded="lg" bg="#111" border="1px solid" borderColor={borderColor}>
       <Box
         as="video"
         src={src}
@@ -105,6 +108,12 @@ function VideoUploadForm({ onUploaded }: VideoUploadFormProps) {
   const [uploadProgress, setUploadProgress] = useState(uploadRuntime.progress)
   const fileInputRef = useRef<HTMLInputElement | null>(null)
   const toast = useToast()
+  const cardBg = useColorModeValue('white', 'whiteAlpha.100')
+  const cardBorder = useColorModeValue('blackAlpha.100', 'whiteAlpha.100')
+  const fieldBg = useColorModeValue('#f7faf9', 'whiteAlpha.100')
+  const headingColor = useColorModeValue('#172033', 'white')
+  const mutedColor = useColorModeValue('blackAlpha.600', 'whiteAlpha.600')
+  const dashedBorder = useColorModeValue('blackAlpha.300', 'whiteAlpha.300')
 
   const videoPreviewUrl = useMemo(() => {
     if (!values.video) {
@@ -270,9 +279,9 @@ function VideoUploadForm({ onUploaded }: VideoUploadFormProps) {
     <Box
       as="form"
       onSubmit={handleSubmit}
-      bg="white"
+      bg={cardBg}
       border="1px solid"
-      borderColor="blackAlpha.100"
+      borderColor={cardBorder}
       rounded="2xl"
       p={{ base: 5, md: 8 }}
       boxShadow="0 24px 70px rgba(23, 32, 51, 0.12)"
@@ -288,7 +297,7 @@ function VideoUploadForm({ onUploaded }: VideoUploadFormProps) {
 
       <Stack spacing={5}>
         <FormControl isInvalid={Boolean(errors.title)} isRequired>
-          <FormLabel fontWeight="bold" color="#172033">
+          <FormLabel fontWeight="bold" color={headingColor}>
             Video title
           </FormLabel>
           <AppInput
@@ -301,7 +310,7 @@ function VideoUploadForm({ onUploaded }: VideoUploadFormProps) {
         </FormControl>
 
         <FormControl isInvalid={Boolean(errors.description)} isRequired>
-          <FormLabel fontWeight="bold" color="#172033">
+          <FormLabel fontWeight="bold" color={headingColor}>
             Description
           </FormLabel>
           <AppTextarea
@@ -316,14 +325,14 @@ function VideoUploadForm({ onUploaded }: VideoUploadFormProps) {
         </FormControl>
 
         <FormControl isInvalid={Boolean(errors.video)} isRequired>
-          <FormLabel fontWeight="bold" color="#172033">
+          <FormLabel fontWeight="bold" color={headingColor}>
             Video file
           </FormLabel>
           <Box
             border="2px dashed"
-            borderColor={errors.video ? 'red.300' : 'blackAlpha.300'}
+            borderColor={errors.video ? 'red.300' : dashedBorder}
             rounded="xl"
-            bg="#f7faf9"
+            bg={fieldBg}
             p={5}
           >
             <AppInput
@@ -345,7 +354,7 @@ function VideoUploadForm({ onUploaded }: VideoUploadFormProps) {
                     <Text fontWeight="bold" noOfLines={1}>
                       {displayVideo?.name}
                     </Text>
-                    <Text fontSize="sm" color="blackAlpha.600">
+                    <Text fontSize="sm" color={mutedColor}>
                       {((displayVideo?.size ?? 0) / 1024 / 1024).toFixed(2)}MB
                     </Text>
                   </Box>
@@ -369,10 +378,10 @@ function VideoUploadForm({ onUploaded }: VideoUploadFormProps) {
               </Stack>
             ) : (
               <Stack align="center" spacing={3} py={6} textAlign="center">
-                <Text fontWeight="bold" color="#172033">
+                <Text fontWeight="bold" color={headingColor}>
                   Choose your video file
                 </Text>
-                <Text fontSize="sm" color="blackAlpha.600">
+                <Text fontSize="sm" color={mutedColor}>
                   MP4, WebM, or MOV up to 100MB
                 </Text>
                 <AppButton

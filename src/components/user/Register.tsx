@@ -6,10 +6,12 @@ import {
   FormLabel,
   Grid,
   Heading,
+  HStack,
   Link,
   SimpleGrid,
   Stack,
   Text,
+  useColorModeValue,
 } from '@chakra-ui/react'
 import { useState, type ClipboardEvent, type FormEvent, type KeyboardEvent } from 'react'
 import { Link as RouterLink, useNavigate } from 'react-router-dom'
@@ -19,6 +21,7 @@ import AppDateInput from '../common/AppDateInput'
 import AppInput from '../common/AppInput'
 import AppPasswordInput from '../common/AppPasswordInput'
 import AppPhoneInput from '../common/AppPhoneInput'
+import { ColorModeButton } from '../ui/color-mode'
 import useAppToast from '../common/useAppToast'
 import { ROUTES } from '../../constants/routes'
 import {
@@ -139,6 +142,19 @@ function Register() {
   const [errors, setErrors] = useState<RegisterErrors>({})
   const [formError, setFormError] = useState('')
   const [isSubmitting, setIsSubmitting] = useState(false)
+  const pageBg = useColorModeValue(
+    'linear-gradient(135deg, #f8fafc 0%, #eef8f6 48%, #fff1f2 100%)',
+    'radial-gradient(circle at top right, rgba(225,29,72,0.2), transparent 32%), #0b0d12',
+  )
+  const cardBg = useColorModeValue('rgba(255, 255, 255, 0.9)', 'rgba(15, 18, 27, 0.92)')
+  const borderColor = useColorModeValue('blackAlpha.100', 'whiteAlpha.200')
+  const headingColor = useColorModeValue('#172033', 'white')
+  const mutedColor = useColorModeValue('blackAlpha.700', 'whiteAlpha.600')
+  const labelColor = useColorModeValue('blackAlpha.700', 'whiteAlpha.800')
+  const panelOverlay = useColorModeValue(
+    'linear-gradient(135deg, rgba(225,29,72,0.5), rgba(20,184,166,0.6))',
+    'linear-gradient(135deg, rgba(20,184,166,0.5), rgba(225,29,72,0.48))',
+  )
 
   const updateValue = (field: keyof RegisterValues, value: string) => {
     setValues((current) => ({ ...current, [field]: value }))
@@ -200,23 +216,25 @@ function Register() {
   }
 
   return (
-    <Box minH="100vh" bg="#0b0d12" color="white" px={{ base: 5, md: 8 }} py={{ base: 8, md: 12 }}>
+    <Box minH="100vh" bg={pageBg} color={headingColor} px={{ base: 5, md: 8 }} py={{ base: 8, md: 12 }}>
       <Container maxW="7xl" px={0}>
         <Grid
           overflow="hidden"
           rounded={{ base: '28px', lg: '34px' }}
-          bg="rgba(15, 18, 27, 0.92)"
+          bg={cardBg}
           border="1px solid"
-          borderColor="whiteAlpha.200"
+          borderColor={borderColor}
           boxShadow="0 30px 90px rgba(0, 0, 0, 0.34)"
           templateColumns={{ base: '1fr', lg: '0.9fr 1.1fr' }}
-          minH={{ lg: '760px' }}
+          minH={{ lg: '700px' }}
+          backdropFilter="blur(18px)"
         >
           <Box
             p={{ base: 7, md: 10, lg: 12 }}
-            bgImage="linear-gradient(135deg, rgba(20,184,166,0.5), rgba(225,29,72,0.48)), url(https://images.unsplash.com/photo-1522869635100-9f4c5e86aa37?auto=format&fit=crop&w=1200&q=80)"
+            bgImage={`${panelOverlay}, url(https://images.unsplash.com/photo-1522869635100-9f4c5e86aa37?auto=format&fit=crop&w=1200&q=80)`}
             bgSize="cover"
             bgPosition="center"
+            color="white"
             display="flex"
             flexDirection="column"
             justifyContent="space-between"
@@ -231,7 +249,7 @@ function Register() {
               <Heading mt={5} fontSize={{ base: '4xl', md: '6xl' }} lineHeight="1" fontWeight="black">
                 Build your streaming profile in seconds.
               </Heading>
-              <Text mt={5} maxW="520px" color="whiteAlpha.800" lineHeight="8">
+              <Text mt={5} maxW="520px" color="whiteAlpha.900" lineHeight="8">
                 Create an account for watchlists, upload tools, playback review, and a dashboard designed for video teams.
               </Text>
             </Box>
@@ -239,17 +257,22 @@ function Register() {
 
           <Box p={{ base: 7, md: 10, lg: 12 }} display="flex" alignItems="center">
             <Box w="100%" maxW="620px" mx="auto">
-              <Heading fontSize={{ base: '3xl', md: '4xl' }} lineHeight="1" fontWeight="black">
-                Sign up
-              </Heading>
-              <Text mt={3} color="whiteAlpha.600">
-                Enter your details to create your Streamly account.
-              </Text>
+              <HStack justify="space-between" align="start" spacing={4}>
+                <Box>
+                  <Heading fontSize={{ base: '3xl', md: '4xl' }} lineHeight="1" fontWeight="black" color={headingColor}>
+                    Sign up
+                  </Heading>
+                  <Text mt={3} color={mutedColor}>
+                    Enter your details to create your Streamly account.
+                  </Text>
+                </Box>
+                <ColorModeButton />
+              </HStack>
 
               <Stack as="form" mt={8} spacing={5} noValidate onSubmit={handleSubmit}>
                 <SimpleGrid columns={{ base: 1, sm: 2 }} spacing={5}>
                   <FormControl isRequired isInvalid={Boolean(errors.firstName)}>
-                    <FormLabel color="whiteAlpha.800">First name</FormLabel>
+                    <FormLabel color={labelColor}>First name</FormLabel>
                     <AppInput
                       value={values.firstName}
                       placeholder="First name"
@@ -262,7 +285,7 @@ function Register() {
                     <FormErrorMessage color="red.300">{errors.firstName}</FormErrorMessage>
                   </FormControl>
                   <FormControl isRequired isInvalid={Boolean(errors.lastName)}>
-                    <FormLabel color="whiteAlpha.800">Last name</FormLabel>
+                    <FormLabel color={labelColor}>Last name</FormLabel>
                     <AppInput
                       value={values.lastName}
                       placeholder="Last name"
@@ -277,7 +300,7 @@ function Register() {
                 </SimpleGrid>
 
                 <FormControl isRequired isInvalid={Boolean(errors.email)}>
-                  <FormLabel color="whiteAlpha.800">Email</FormLabel>
+                  <FormLabel color={labelColor}>Email</FormLabel>
                   <AppInput
                     type="email"
                     value={values.email}
@@ -289,7 +312,7 @@ function Register() {
 
                 <SimpleGrid columns={{ base: 1, sm: 2 }} spacing={5}>
                   <FormControl isRequired isInvalid={Boolean(errors.birthdate)}>
-                    <FormLabel color="whiteAlpha.800">Birthdate</FormLabel>
+                    <FormLabel color={labelColor}>Birthdate</FormLabel>
                     <AppDateInput
                       value={values.birthdate}
                       maxDate={new Date(new Date().setFullYear(new Date().getFullYear() - 18))}
@@ -298,7 +321,7 @@ function Register() {
                     <FormErrorMessage color="red.300">{errors.birthdate}</FormErrorMessage>
                   </FormControl>
                   <FormControl isRequired isInvalid={Boolean(errors.phone)}>
-                    <FormLabel color="whiteAlpha.800">Phone number</FormLabel>
+                    <FormLabel color={labelColor}>Phone number</FormLabel>
                     <AppPhoneInput
                       value={values.phone}
                       onChange={(value) => updateValue('phone', value)}
@@ -309,7 +332,7 @@ function Register() {
 
               <SimpleGrid columns={{ base: 1, sm: 2 }} spacing={5}>
                 <FormControl isRequired isInvalid={Boolean(errors.password)}>
-                  <FormLabel color="whiteAlpha.800">Password</FormLabel>
+                  <FormLabel color={labelColor}>Password</FormLabel>
                   <AppPasswordInput
                     value={values.password}
                     placeholder="Create a password"
@@ -318,7 +341,7 @@ function Register() {
                   <FormErrorMessage color="red.300">{errors.password}</FormErrorMessage>
                 </FormControl>
                 <FormControl isRequired isInvalid={Boolean(errors.confirmPassword)}>
-                  <FormLabel color="whiteAlpha.800">Confirm Password</FormLabel>
+                  <FormLabel color={labelColor}>Confirm Password</FormLabel>
                   <AppPasswordInput
                     value={values.confirmPassword}
                     placeholder="Confirm your password"
@@ -349,7 +372,7 @@ function Register() {
                 </Stack>
               </Stack>
 
-              <Text mt={6} color="whiteAlpha.700">
+              <Text mt={6} color={mutedColor}>
                 Already have an account?{' '}
                 <Link as={RouterLink} to={ROUTES.SIGN_IN} color="#38bdf8" fontWeight="bold">
                   Sign in

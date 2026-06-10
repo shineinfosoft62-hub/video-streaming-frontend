@@ -1,4 +1,4 @@
-import { Box, HStack, Icon, Stack, Text, type BoxProps, useDisclosure } from '@chakra-ui/react'
+import { Box, HStack, Icon, Stack, Text, type BoxProps, useColorModeValue, useDisclosure } from '@chakra-ui/react'
 import { useState } from 'react'
 import { FiLogOut, FiShield } from 'react-icons/fi'
 import { useNavigate } from 'react-router-dom'
@@ -21,6 +21,11 @@ function AppLogoutButton({ mode = 'sidebar', onLoggedOut, ...props }: AppLogoutB
   const { showApiToast } = useAppToast()
   const { isOpen, onClose, onOpen } = useDisclosure()
   const [isLoggingOut, setIsLoggingOut] = useState(false)
+  const panelBg = useColorModeValue('blackAlpha.50', 'whiteAlpha.100')
+  const panelBorder = useColorModeValue('blackAlpha.100', 'whiteAlpha.100')
+  const settingsBg = useColorModeValue('rgba(225, 29, 72, 0.08)', 'rgba(225, 29, 72, 0.1)')
+  const titleColor = useColorModeValue('#172033', 'white')
+  const mutedColor = useColorModeValue('blackAlpha.600', 'whiteAlpha.600')
 
   const handleLogout = async () => {
     setIsLoggingOut(true)
@@ -45,9 +50,9 @@ function AppLogoutButton({ mode = 'sidebar', onLoggedOut, ...props }: AppLogoutB
   return (
     <Box
       rounded={isSettingsMode ? '2xl' : 'xl'}
-      bg={isSettingsMode ? 'rgba(225, 29, 72, 0.1)' : 'whiteAlpha.100'}
+      bg={isSettingsMode ? settingsBg : panelBg}
       border="1px solid"
-      borderColor={isSettingsMode ? 'rgba(225, 29, 72, 0.28)' : 'whiteAlpha.100'}
+      borderColor={isSettingsMode ? 'rgba(225, 29, 72, 0.28)' : panelBorder}
       p={isSettingsMode ? { base: 5, md: 6 } : 4}
       {...props}
     >
@@ -65,11 +70,11 @@ function AppLogoutButton({ mode = 'sidebar', onLoggedOut, ...props }: AppLogoutB
           )}
           <Box minW={0}>
             {isSettingsMode && (
-              <Text fontWeight="bold" color="white">
+              <Text fontWeight="bold" color={titleColor}>
                 Account session
               </Text>
             )}
-            <Text fontSize="sm" color="whiteAlpha.600" lineHeight="5">
+            <Text fontSize="sm" color={mutedColor} lineHeight="5">
               {isSettingsMode
                 ? 'End this session securely and return to the sign in screen.'
                 : 'End your current session.'}

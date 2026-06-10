@@ -1,10 +1,13 @@
 import { useState } from 'react'
-import { IconButton, InputGroup, InputRightElement, type InputProps } from '@chakra-ui/react'
+import { IconButton, InputGroup, InputRightElement, type InputProps, useColorModeValue } from '@chakra-ui/react'
 import { ViewIcon, ViewOffIcon } from '@chakra-ui/icons'
 import AppInput from './AppInput'
 
 function AppPasswordInput(props: InputProps) {
   const [isVisible, setIsVisible] = useState(false)
+  const iconColor = useColorModeValue('blackAlpha.700', 'whiteAlpha.700')
+  const iconHoverColor = useColorModeValue('#172033', 'white')
+  const iconHoverBg = useColorModeValue('blackAlpha.100', 'whiteAlpha.100')
 
   return (
     <InputGroup>
@@ -15,8 +18,8 @@ function AppPasswordInput(props: InputProps) {
           icon={isVisible ? <ViewOffIcon /> : <ViewIcon />}
           size="sm"
           variant="ghost"
-          color="blackAlpha.700"
-          _hover={{ bg: 'whiteAlpha.100', color: 'blackAlpha.700' }}
+          color={iconColor}
+          _hover={{ bg: iconHoverBg, color: iconHoverColor }}
           onClick={() => setIsVisible((current) => !current)}
         />
       </InputRightElement>
